@@ -6,7 +6,6 @@ import BlankCard from "@/app/(DashboardLayout)/components/shared/BlankCard";
 import DashboardCard from "../shared/DashboardCard";
 
 const TemplateList = ({ temp }) => {
-    // console.log({temp});
 
     return (
         <DashboardCard title="Нэрийн хуудасны загварууд">

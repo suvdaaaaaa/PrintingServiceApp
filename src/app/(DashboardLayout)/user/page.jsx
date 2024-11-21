@@ -7,8 +7,6 @@ import UserList from "../components/user/UserList";
 const UserPage = async ({ searchParams }) => {
     const userData = await getUsers();
 
-    // console.log({userData});
-
     return (
         <div className="container m-auto p-6 indicator_name lg:px-8 indicator_name flex min-h-screen flex-col items-start justify-start ">
             <Box>

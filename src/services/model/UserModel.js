@@ -69,8 +69,6 @@ export const createUserModel = async (data) => {
       },
     });
 
-    console.log("newUser", newUser);
-
     return {
       status: 200,
       message: "Амжилттай бүртгэгдлээ",

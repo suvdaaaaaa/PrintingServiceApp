@@ -1,5 +1,5 @@
 const getUsers = async () => {
-  const res = await fetch(`${process.env.BASE_URL}/api/user`, {
+  const res = await fetch(`/api/user`, {
     cache: "no-cache",
   });
 
@@ -11,7 +11,7 @@ const getUsers = async () => {
 };
 
 const getUser = async (id) => {
-  const res = await fetch(`${process.env.BASE_URL}/api/user/${id}`, {
+  const res = await fetch(`/api/user/${id}`, {
     cache: "no-cache",
   });
 
@@ -23,7 +23,7 @@ const getUser = async (id) => {
 };
 
 const createUser = async (data) => {
-  const res = await fetch(`http://localhost:3000/api/authentication/register`, {
+  const res = await fetch(`/api/authentication/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

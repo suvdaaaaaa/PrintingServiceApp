@@ -23,7 +23,6 @@ export const createMaterialModel = async (data) => {
   // }
 
   const { user_id, side, quantity, paper_type, description, file_url, total_price } = data;
-  console.log(data);
 
   try {
     const newMaterial = await prisma.material.create({

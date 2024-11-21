@@ -63,7 +63,7 @@ const Button = ({
     variant = "default",
     size = "default",
     children,
-    onClick, // Include onClick in the destructuring
+    onClick,
     ...props
 }) => {
     const baseStyles =
@@ -84,7 +84,7 @@ const Button = ({
     return (
         <button
             className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-            onClick={onClick} // Ensure onClick is passed to the button element
+            onClick={onClick}
             {...props}
         >
             {children}
@@ -105,7 +105,7 @@ const Input = ({ className = "", ...props }) => (
 const Select = ({ className = "", children, value, onChange, ...props }) => (
     <select
         className={`flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
-        value={value} // Use the value prop here
+        value={value}
         onChange={onChange}
         {...props}
     >
@@ -117,9 +117,9 @@ const Select = ({ className = "", children, value, onChange, ...props }) => (
 const Slider = ({
     className = "",
     value,
-    min = 0, // Default minimum value
-    max = 100, // Default maximum value
-    step = 1, // Default step value
+    min = 0,
+    max = 100,
+    step = 1, 
     onChange,
     ...props
 }) => (
@@ -139,32 +139,52 @@ const Slider = ({
             [&::-moz-range-thumb]:cursor-pointer 
             ${className}`}
         value={value}
-        min={min} // Use min prop
-        max={max} // Use max prop
-        step={step} // Use step prop
+        min={min} 
+        max={max}
+        step={step}
         onChange={onChange}
         {...props}
     />
 );
 
 // Main Business Card Editor Component
-const BusinessCardEditor = () => {
+const BusinessCardEditor = ({id}) => {
     const canvasRef = useRef(null);
-    const [context, setContext] =
-        (useState < CanvasRenderingContext2D) | (null > null);
+    const [context, setContext] = useState(null);
 
-    const [text, setText] = useState < string > "ene yachiv";
-    const [fontSize, setFontSize] = useState < number > 24;
-    const [fontColor, setFontColor] = useState < string > "#4A5568";
-    const [fontFamily, setFontFamily] = useState < string > "Arial";
-    const [bold, setBold] = useState < boolean > false;
-    const [italic, setItalic] = useState < boolean > false;
-    const [underline, setUnderline] = useState < boolean > false;
-    const [alignment, setAlignment] = useState < string > "center";
+    const [text, setText] = useState("");
+    const [fontSize, setFontSize] = useState(24);
+    const [fontColor, setFontColor] = useState("#4A5568");
+    const [fontFamily, setFontFamily] = useState("Arial");
+    const [bold, setBold] = useState(false);
+    const [italic, setItalic] = useState(false);
+    const [underline, setUnderline] = useState(false);
+    const [alignment, setAlignment] = useState("center");
     const [textPosition, setTextPosition] = useState({ x: 450, y: 250 });
-    const [isDragging, setIsDragging] = useState < boolean > false;
-    const [uploadedImage, setUploadedImage] =
-        (useState < HTMLImageElement) | (null > null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [uploadedImage, setUploadedImage] = useState(null);
+
+    async function getTemplateImage () {
+        const data = await fetch(`/api/templates/${id}`);
+        const res = await data.json();
+        console.log(res.image_url)
+
+        fetch(res.image_url)
+        .then(response => response.blob())
+        .then(blob => {
+            const img = new Image();
+            img.src = URL.createObjectURL(blob);
+            img.onload = () => {
+                setUploadedImage(img);
+                URL.revokeObjectURL(img.src);
+            };
+        });
+        
+       
+    }
+    useEffect(() => {
+        getTemplateImage()
+    },[])
 
     useEffect(() => {
         if (canvasRef.current) {
@@ -268,7 +288,7 @@ const BusinessCardEditor = () => {
             img.src = URL.createObjectURL(e.target.files[0]);
             img.onload = () => {
                 setUploadedImage(img);
-                URL.revokeObjectURL(img.src); // Clean up memory
+                URL.revokeObjectURL(img.src);
             };
         }
     };
@@ -595,7 +615,7 @@ export default BusinessCardEditor;
 //             [&::-moz-range-thumb]:cursor-pointer
 //             ${className}`}
 //         value={value}
-//         min={min} // Use min prop
+//         min={min} 
 //         max={max} // Use max prop
 //         step={step} // Use step prop
 //         onChange={onChange}

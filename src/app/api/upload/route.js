@@ -12,7 +12,6 @@ export const POST = async (req, res) => {
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const filename = `${Date.now()}${file.name.replaceAll(" ", "_")}`;
-  console.log(filename);
   try {
     await writeFile(
       path.join(process.cwd(), "public/assets/" + filename),

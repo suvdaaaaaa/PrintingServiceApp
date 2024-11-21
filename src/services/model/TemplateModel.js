@@ -16,7 +16,8 @@ export const getTemplateByIdModel = async (id) => {
       select: {
         template_id: true,
         template_name: true,
-        price: true
+        price: true,
+        image_url: true
       },
       where: {
         template_id: id,
