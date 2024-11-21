@@ -17,6 +17,11 @@ export const getUserByIdModel = async (id) => {
     const user = await prisma.user.findUnique({
       select: {
         user_id: true,
+        fname: true,
+        lname: true,
+        email: true,
+        phone: true,
+        role: true,
       },
       where: {
         user_id: id,
@@ -84,7 +89,6 @@ export const createUserModel = async (data) => {
 
 export const loginUserModel = async (email, pwd) => {
   try {
-    console.log(email, pwd);
     const user = await prisma.user.findUnique({
       select: {
         user_id: true,
@@ -102,16 +106,17 @@ export const loginUserModel = async (email, pwd) => {
     if (!user) {
       return {
         status: 404,
-        message: "User not found",
+        message: "Бүртгэлгүй хэрэглэгч байна",
         result: null,
       };
     }
 
     const isPasswordValid = await bcrypt.compare(pwd, user.password);
+
     if (!isPasswordValid) {
       return {
         status: 401,
-        message: "Invalid credentials",
+        message: "Нэвтрэх нэр эсвэл нууц үг буруу байна!",
         result: null,
       };
     }
@@ -119,14 +124,14 @@ export const loginUserModel = async (email, pwd) => {
     const { password, ...userData } = user;
     return {
       status: 200,
-      message: "Login successful",
+      message: "Амжилттай нэвтэрлээ",
       result: userData,
     };
   } catch (error) {
     console.error("Error in loginUserModel:", error);
     return {
       status: 500,
-      message: "Failed to login",
+      message: "Нэвтрэхэд алдаа гарлаа",
       result: null,
     };
   }

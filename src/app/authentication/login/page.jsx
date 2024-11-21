@@ -9,21 +9,6 @@ import { useState } from "react";
 // import { loginUser } from "@/services/UserService";
 
 const Login2 = () => {
-    const [error, setError] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleLogin = async (data) => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            console.log("Login successful", result);
-        } catch (error) {
-            setError("Нэвтрэхэд алдаа гарлаа. Та дахин оролдоно уу.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     return (
         <PageContainer title="Login" description="this is Login page">
             <Box
@@ -112,18 +97,7 @@ const Login2 = () => {
                                         </Typography>
                                     </Stack>
                                 }
-                                onSubmit={handleLogin}
                             />
-                            {error && (
-                                <Typography
-                                    variant="body2"
-                                    color="error"
-                                    textAlign="center"
-                                    mt={2}
-                                >
-                                    {error}
-                                </Typography>
-                            )}
                         </Card>
                     </Grid>
                 </Grid>

@@ -1,45 +1,86 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardCard from "../shared/DashboardCard";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, MenuItem, Select, InputLabel, FormControl, Box, TextField } from "@mui/material";
+import { Button, MenuItem, Select, InputLabel, FormControl, Box, TextField, Typography, IconButton } from "@mui/material";
+import { createMaterial } from "@/services/MaterialService";
+import { ToastContainer } from "react-toastify";
+import CloseIcon from '@mui/icons-material/Close';
 
 const validationSchema = yup.object({
-  side: yup.string().required("Side is required"),
-  quantity: yup.string().required("Quantity is required"),
-  material: yup.string().required("Material is required"),
-  file: yup.mixed().required("File is required"),
+  // side: yup.string().required("Талаа оруулна уу"),
+  // quantity: yup.string().required("Ширхэгээ оруулна уу"),
+  // material: yup.string().required("Цаасны төрлөө оруулна уу"),
+  file_url: yup.mixed().required("Файлаа оруулна уу"),
 });
 
 export default function FormsOrder() {
+  const [isFormVisible, setIsFormVisible] = useState(true);
   const formik = useFormik({
     initialValues: {
-      side: "2", 
-      quantity: "50",
-      material: "Mat",
+      side: 2, 
+      quantity: 50,
+      paper_type: "Mat",
       description: "",
-      file: null,
+      file_url: null,
+      total_price: 0
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      const data = await createMaterial(values);
+      if (data.status === 200) {
+          toast.success(data.message);
+      } else {
+          toast.error(data.message);
+      }
     },
+    enableReinitialize: true,
   });
 
-  // Handle file input change
   const handleFileChange = (event) => {
     const file = event.currentTarget.files ? event.currentTarget.files[0] : null;
-    formik.setFieldValue("file", file);
+    formik.setFieldValue("file_url", file);
   };
+
+  const calculatePrice = (values) => {
+    const basePrice = 10000;
+    const quantityMultiplier = Number(values.quantity) / 50;
+    const materialMultiplier = values.paper_type === "Mat" ? 1 : 1.2;
+    return basePrice * quantityMultiplier * materialMultiplier;
+  };
+
+  useEffect(() => {
+    const calculatedPrice = calculatePrice(formik.values);
+    formik.setFieldValue("total_price", calculatedPrice);
+  }, [formik.values.quantity, formik.values.paper_type]);
+
+    const closeForm = () => {
+    formik.resetForm();
+    setIsFormVisible(false);
+  };
+
+    if (!isFormVisible) {
+    return null;
+  }
 
   return (
     <DashboardCard title="Upload your own design">
-      <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 2 }}>
-        {/* Side Field */}
+    <ToastContainer />
+      <form onSubmit={formik.handleSubmit}>
+       <IconButton
+          onClick={closeForm}
+          sx={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            zIndex: 10,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <FormControl fullWidth margin="normal" error={formik.touched.side && Boolean(formik.errors.side)}>
-          <InputLabel id="side-label">Тал</InputLabel>
+          <InputLabel>Тал</InputLabel>
           <Select
-            labelId="side-label"
             id="side"
             name="side"
             value={formik.values.side}
@@ -54,11 +95,9 @@ export default function FormsOrder() {
           )}
         </FormControl>
 
-        {/* Quantity Field */}
         <FormControl fullWidth margin="normal" error={formik.touched.quantity && Boolean(formik.errors.quantity)}>
-          <InputLabel id="quantity-label">Ширхэг</InputLabel>
+          <InputLabel>Ширхэг</InputLabel>
           <Select
-            labelId="quantity-label"
             id="quantity"
             name="quantity"
             value={formik.values.quantity}
@@ -67,25 +106,23 @@ export default function FormsOrder() {
             label="Quantity"
           >
             <MenuItem value="50">50</MenuItem>
-            <MenuItem value="75">75</MenuItem>
             <MenuItem value="100">100</MenuItem>
+            <MenuItem value="200">200</MenuItem>
           </Select>
           {formik.touched.quantity && formik.errors.quantity && (
             <div style={{ color: "red", fontSize: "12px" }}>{formik.errors.quantity}</div>
           )}
         </FormControl>
 
-        {/* Material Field */}
-        <FormControl fullWidth margin="normal" error={formik.touched.material && Boolean(formik.errors.material)}>
-          <InputLabel id="material-label">Цаасны төрөл</InputLabel>
+        <FormControl fullWidth margin="normal" error={formik.touched.paper_type && Boolean(formik.errors.paper_type)}>
+          <InputLabel>Цаасны төрөл</InputLabel>
           <Select
-            labelId="material-label"
-            id="material"
-            name="material"
-            value={formik.values.material}
+            id="paper_type"
+            name="paper_type"
+            value={formik.values.paper_type}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            label="Material"
+            label="Paper Type"
           >
             <MenuItem value="Mat">Матт цаас</MenuItem>
             <MenuItem value="White">Extra white</MenuItem>
@@ -93,12 +130,11 @@ export default function FormsOrder() {
             <MenuItem value="Soft Gloss">Матт цаас + Зөөлөн бүрэлттэй</MenuItem>
             <MenuItem value="Gloss">Матт цаас + Гялгар бүрэлттэй</MenuItem>
           </Select>
-          {formik.touched.material && formik.errors.material && (
-            <div style={{ color: "red", fontSize: "12px" }}>{formik.errors.material}</div>
+          {formik.touched.paper_type && formik.errors.paper_type && (
+            <div style={{ color: "red", fontSize: "12px" }}>{formik.errors.paper_type}</div>
           )}
         </FormControl>
 
-        {/* Description Field */}
         <TextField
           fullWidth
           margin="normal"
@@ -113,13 +149,12 @@ export default function FormsOrder() {
           helperText={formik.touched.description && formik.errors.description}
         />
 
-        {/* File Upload Field */}
-        <FormControl fullWidth margin="normal" error={formik.touched.file && Boolean(formik.errors.file)}>
-          <InputLabel id="file-label">Файл оруулах</InputLabel>
+        <FormControl fullWidth margin="normal" error={formik.touched.file_url && Boolean(formik.errors.file_url)}>
+          <InputLabel>Файл оруулах</InputLabel>
           <input
-            id="file"
-            name="file"
-            type="file"
+            id="file_url"
+            name="file_url"
+            type="file_url"
             onChange={handleFileChange}
             onBlur={formik.handleBlur}
             style={{ display: "none" }}
@@ -133,16 +168,19 @@ export default function FormsOrder() {
             Choose file
             <input hidden type="file" onChange={handleFileChange} />
           </Button>
-          {formik.touched.file && formik.errors.file && (
-            <div style={{ color: "red", fontSize: "12px" }}>{formik.errors.file}</div>
+          {formik.touched.file_url && formik.errors.file_url && (
+            <div style={{ color: "red", fontSize: "12px" }}>{formik.errors.file_url}</div>
           )}
         </FormControl>
+        
+        <Typography variant="h4" color="primary" sx={{ mt: 2 }}>
+          Үнэ: {formik.values.total_price.toFixed(2)} ₮
+        </Typography>
 
-        {/* Submit Button */}
         <Button color="primary" variant="contained" fullWidth type="submit" sx={{ mt: 2 }}>
           Захиалах
         </Button>
-      </Box>
+      </form>
     </DashboardCard>
   );
 }

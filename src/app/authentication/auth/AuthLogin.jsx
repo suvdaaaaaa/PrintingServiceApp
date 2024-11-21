@@ -35,7 +35,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             const { email, password } = values;
             const data = await loginUser(email, password);
             if (data.status === 200) {
-                console.log(data);
                 toast.success(data.message);
                 localStorage.setItem("PSA-USER", JSON.stringify(data.result));
                 window.location.href = "/";

@@ -49,20 +49,12 @@ model OrderDetail {
   paper_type      Int
   description     String?
   delivery_type   Int
-  unit_price      Float
+  total_price      Float
   createdDate     DateTime      @default(now())
   deliverytype    Delivery_type @relation(fields: [delivery_type], references: [delivery_type_id])
   material        Material      @relation(fields: [material_id], references: [material_id])
   order           Order         @relation(fields: [order_id], references: [order_id])
-  papertype       Paper_type    @relation(fields: [paper_type], references: [paper_type_id])
 }
-
-model Paper_type {
-  paper_type_id   Int           @id @default(autoincrement())
-  paper_type_name String        @db.VarChar(255)
-  order_detail    OrderDetail[]
-}
-
 model Delivery_type {
   delivery_type_id   Int           @id @default(autoincrement())
   delivery_type_name String        @db.VarChar(255)
@@ -72,22 +64,20 @@ model Delivery_type {
 model Material {
   material_id     Int           @id @default(autoincrement())
   user_id         Int
-  template_type   Int
+  material_type   Int
   template_id     Int
   file_name       String        @db.VarChar(50)
   file_url        String
   material_object Json
+  quantity        Int
+  side            Int
+  paper_type      String
+  description     String?
+  total_price      Float
   createdDate     DateTime      @default(now())
   template        Templates     @relation(fields: [template_id], references: [template_id])
-  templatetype    Template_type @relation(fields: [template_type], references: [template_type_id])
   user            User          @relation(fields: [user_id], references: [user_id])
   order_detail    OrderDetail[]
-}
-
-model Template_type {
-  template_type_id   Int        @id @default(autoincrement())
-  template_type_name String     @db.VarChar(255)
-  material           Material[]
 }
 
 model Templates {

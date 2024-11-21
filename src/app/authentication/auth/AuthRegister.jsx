@@ -25,7 +25,7 @@ const userSchema = yup.object({
     password: yup.string().required("Нууц үгээ оруулна уу"),
 });
 
-const AuthRegister = ({ onRegister, loading, title, subtitle, subtext }) => {
+const AuthRegister = ({ title, subtitle, subtext }) => {
     const formik = useFormik({
         initialValues: {
             fname: "",
@@ -35,10 +35,8 @@ const AuthRegister = ({ onRegister, loading, title, subtitle, subtext }) => {
         },
         validationSchema: userSchema,
         onSubmit: async (values) => {
-            console.log(values);
             const data = await createUser(values);
             if (data.status === 200) {
-                console.log(data);
                 toast.success(data.message);
             } else {
                 toast.error(data.message);
@@ -149,7 +147,7 @@ const AuthRegister = ({ onRegister, loading, title, subtitle, subtext }) => {
                         variant="contained"
                         sx={{ mt: 3 }}
                     >
-                        {loading ? "loading..." : "Бүртгүүлэх"}
+                        Бүртгүүлэх
                     </Button>
                 </Stack>
             </form>

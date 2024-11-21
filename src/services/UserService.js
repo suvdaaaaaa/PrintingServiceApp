@@ -35,19 +35,15 @@ const createUser = async (data) => {
 };
 
 const loginUser = async (email, password) => {
-  try {
-    const res = await fetch(`/api/authentication/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+  const res = await fetch(`/api/authentication/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }),
+  });
 
-    return res.json();
-  } catch (error) {
-    throw new Error('Login request failed');
-  }
+  return res.json();
 };
 
 

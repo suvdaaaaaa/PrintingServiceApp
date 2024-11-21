@@ -1,6 +1,4 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Box, Card, Typography, Grid, Stack, Link } from "@mui/material";
 import AuthRegister from "../auth/AuthRegister";
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
@@ -10,36 +8,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Register2 = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const router = useRouter();
-
-    const handleRegister = async (data) => {
-        setLoading(true);
-        setError(null);
-        try {
-            // const response = await createUser(data);
-
-            console.log("response", response);
-
-            if (response.status === 200) {
-                toast.success(response.result);
-                router.push("/authentication/login");
-            } else if (response.status === 409) {
-                toast.error(response.result);
-            } else {
-                toast.error(
-                    response.message || "An error occurred while registering."
-                );
-            }
-        } catch (err) {
-            console.error("Error creating user:", err);
-            toast.error(err.message || "Failed to register user");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     return (
         <PageContainer title="Register" description="this is Register page">
             <ToastContainer />
@@ -94,8 +62,6 @@ const Register2 = () => {
                             </Box>
 
                             <AuthRegister
-                                onRegister={handleRegister}
-                                loading={loading}
                                 subtext={
                                     <Typography
                                         variant="subtitle1"
@@ -134,16 +100,6 @@ const Register2 = () => {
                                     </Stack>
                                 }
                             />
-
-                            {error && (
-                                <Typography
-                                    color="error"
-                                    align="center"
-                                    sx={{ mt: 2 }}
-                                >
-                                    {error}
-                                </Typography>
-                            )}
                         </Card>
                     </Grid>
                 </Grid>
