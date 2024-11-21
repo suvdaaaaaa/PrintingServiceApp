@@ -22,13 +22,13 @@ export const createMaterialModel = async (data) => {
   //   };
   // }
 
-  const {side, quantity, paper_type, description, file_url, total_price } = data;
+  const { user_id, side, quantity, paper_type, description, file_url, total_price } = data;
   console.log(data);
 
   try {
     const newMaterial = await prisma.material.create({
       data: {
-        user_id: 2,
+        user_id,
         template_id: 1,
         material_type: 1,
         file_name: "Upload",
