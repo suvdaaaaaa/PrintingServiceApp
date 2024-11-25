@@ -105,7 +105,7 @@ export default function FormsOrder() {
     }
 
     return (
-        <DashboardCard title="Upload your own design">
+        <DashboardCard title="Өөрийн загвараа оруулна уу">
             <ToastContainer />
             <form onSubmit={formik.handleSubmit}>
                 <IconButton

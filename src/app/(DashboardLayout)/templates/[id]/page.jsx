@@ -7,9 +7,8 @@ import { useParams } from 'next/navigation'
 
 const TemplateDetail = () => {
   const params = useParams()
-console.log(params)
     return (
-        <DashboardCard title="Энд нэг гое юм хийнэ">
+        <DashboardCard title="Нэрийн хуудас засварлах">
             <BusinessCardEditor id={params.id}/>
         </DashboardCard>
     );

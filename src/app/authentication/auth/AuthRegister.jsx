@@ -17,7 +17,9 @@ import "react-toastify/dist/ReactToastify.css";
 
 const userSchema = yup.object({
     fname: yup.string().required("Нэрээ бичнэ үү"),
-    phone: yup.string().required("Утасны дугаараа бичнэ үү"),
+    phone: yup
+        .string().required("Утасны дугаараа бичнэ үү")
+        .matches(/^[0-9-]*$/, 'Зөвхөн тоо оруулна уу'),
     email: yup
         .string()
         .email("Цахим шуудангийн хаягаа зөв бичнэ үү")

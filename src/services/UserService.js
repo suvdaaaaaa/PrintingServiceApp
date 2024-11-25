@@ -46,5 +46,17 @@ const loginUser = async (email, password) => {
   return res.json();
 };
 
+const updateUser = async (data) => {
+  const res = await fetch(`/api/profile`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
 
-export { getUser, createUser, getUsers, loginUser };
+  return res.json();
+};
+
+
+export { getUser, createUser, getUsers, loginUser, updateUser };

@@ -9,6 +9,7 @@ import {
     MenuItem,
     ListItemIcon,
     ListItemText,
+    ListItem,
 } from "@mui/material";
 
 import { IconListCheck, IconUser } from "@tabler/icons-react";
@@ -59,7 +60,7 @@ const Profile = () => {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 sx={{
                     "& .MuiMenu-paper": {
-                        width: "200px",
+                        width: "230px",
                     },
                 }}
             >
@@ -67,13 +68,17 @@ const Profile = () => {
                     <ListItemIcon>
                         <IconUser width={20} />
                     </ListItemIcon>
-                    <ListItemText>Хувийн мэдээлэл</ListItemText>
+                    <ListItem component={Link} href="/profile">
+                        <ListItemText primary="Хувийн мэдээлэл" />
+                    </ListItem>
                 </MenuItem>
                 <MenuItem>
                     <ListItemIcon>
                         <IconListCheck width={20} />
                     </ListItemIcon>
-                    <ListItemText>Түүх</ListItemText>
+                    <ListItem component={Link} href="/profile">
+                        <ListItemText primary="Түүх" />
+                    </ListItem>
                 </MenuItem>
                 <Box mt={1} py={1} px={2}>
                     <Button

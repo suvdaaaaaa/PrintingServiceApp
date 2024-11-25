@@ -21,7 +21,6 @@ export const getUserByIdModel = async (id) => {
         lname: true,
         email: true,
         phone: true,
-        role: true,
       },
       where: {
         user_id: id,
@@ -135,4 +134,25 @@ export const loginUserModel = async (email, pwd) => {
   }
 };
 
+export const updateUserModel = async (data) => {
+  try {
+    const updatedUser = await prisma.user.update({
+      data: {
+        fname: data.fname,
+        lname: data.lname,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+      },
+      where: {
+        user_id: data.user_id,
+      },
+    });
+
+    return updatedUser;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw new Error("Failed to update user");
+  }
+};
 
