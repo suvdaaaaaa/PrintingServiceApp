@@ -37,6 +37,13 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             if (data.status === 200) {
                 toast.success(data.message);
                 localStorage.setItem("PSA-USER", JSON.stringify(data.result));
+                localStorage.setItem(
+                    "PSA-ADMIN",
+                    JSON.stringify({
+                        data: "",
+                        name: "admin",
+                    })
+                );
                 window.location.href = "/";
             } else {
                 toast.error(data.message);

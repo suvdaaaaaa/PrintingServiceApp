@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   const body = await request.json();
-  const dt: any = await createTemplateModel(body);
+  const dt = await createTemplateModel(body);
 
   if (!dt) {
     return NextResponse.json({

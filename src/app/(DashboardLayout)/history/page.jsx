@@ -22,15 +22,15 @@ const HistoryPage = ({ searchParams }) => {
     }, []);
 
     useEffect(() => {
-    async function fetchOrder() {
-        try {
-            const data = await getMaterials();
-            setOrderData(data);
-        } catch (error) {
-            console.error("Error fetching templates:", error);
+        async function fetchOrder() {
+            try {
+                const data = await getMaterials();
+                setOrderData(data);
+            } catch (error) {
+                console.error("Error fetching templates:", error);
+            }
         }
-    }
-    fetchOrder();
+        fetchOrder();
     }, []);
 
     return (
@@ -43,5 +43,3 @@ const HistoryPage = ({ searchParams }) => {
 };
 
 export default HistoryPage;
-
-

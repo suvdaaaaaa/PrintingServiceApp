@@ -3,7 +3,6 @@ import * as fabric from "fabric";
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 import {
-    Box,
     Button,
     Card,
     CardContent,
@@ -12,7 +11,6 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -191,9 +189,9 @@ const addText = (canvi) => {
     canvi.renderAll();
 };
 
-function Canvas({ id }) {
-    const [formName, setFormName] = React.useState("");
-    const [formPrice, setFormPrice] = React.useState(0);
+function Dashboard() {
+    const [formName, setFormName] = React.useState("Hello");
+    const [formPrice, setFormPrice] = React.useState(10000);
     const [open, setOpen] = React.useState(false);
     const [canvas, setCanvas] = useState("");
     const [fontToolbar, setFontToolbar] = React.useState(false);
@@ -249,7 +247,7 @@ function Canvas({ id }) {
         setCanvas(initCanvas());
     }, []);
 
-    const initCanvas = async () => {
+    const initCanvas = () => {
         var canvi = new fabric.Canvas("canvas", {
             height: 350,
             width: 600,
@@ -278,26 +276,12 @@ function Canvas({ id }) {
             setFontToolbar(false);
         });
         canvi.renderAll();
-
-        const data = await fetch(`/api/templates/${id}`, {
-            cache: "no-cache",
-        });
-        const json = await data.json();
-        setFormName(json.template_name);
-        setFormPrice(json.price);
-        canvi
-            .loadFromJSON(JSON.parse(json.design_object))
-            .then((canvas) => canvas.requestRenderAll());
         return canvi;
     };
 
     return (
         <Grid container spacing={2}>
             <Grid size={4}>
-                <Card sx={{ mb: 2 }}>
-                    <CardHeader title="Properties" />
-                    <CardContent sx={{ pt: 0 }}></CardContent>
-                </Card>
                 <Card>
                     <CardHeader title="Toolbar" />
                     <CardContent sx={{ pt: 0 }}>
@@ -432,6 +416,25 @@ function Canvas({ id }) {
                                 </Stack>
                             </>
                         )}
+
+                        {/* <button onClick={() => addRect(canvas)}>
+                            Rectangle
+                        </button>
+                        <br />
+                        <button onClick={() => changeColor("red")}>Red</button>
+                        <br />
+                        <button onClick={() => changeColor("green")}>
+                            Green
+                        </button>
+                        <br />
+                        <button onClick={() => changeColor("blue")}>
+                            Blue
+                        </button>
+                        <br />
+                        <button>Text</button>
+                        <br />
+                        <button onClick={() => changeBold()}>Bold</button>
+                        <br /> */}
                     </CardContent>
                 </Card>
             </Grid>
@@ -451,7 +454,14 @@ function Canvas({ id }) {
                                 label="Template name"
                                 onChange={(e) => setFormName(e.target.value)}
                             />
-                            <Typography variant="h3">{formPrice}</Typography>
+                            <TextField
+                                variant="outlined"
+                                size="small"
+                                type="number"
+                                value={formPrice}
+                                label="Price"
+                                onChange={(e) => setFormPrice(e.target.value)}
+                            />
                         </Grid>
                         <Grid>
                             <Grid container spacing={1}>
@@ -489,6 +499,10 @@ function Canvas({ id }) {
                                                         template_name: formName,
                                                         price: formPrice,
                                                         image_url: dataURL,
+                                                        design_object:
+                                                            JSON.stringify(
+                                                                canvas.toJSON()
+                                                            ),
                                                     }),
                                                 }
                                             );
@@ -548,4 +562,4 @@ function Canvas({ id }) {
     );
 }
 
-export default Canvas;
+export default Dashboard;

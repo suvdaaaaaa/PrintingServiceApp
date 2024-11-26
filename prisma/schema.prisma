@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -49,12 +50,13 @@ model OrderDetail {
   paper_type      Int
   description     String?
   delivery_type   Int
-  total_price      Float
   createdDate     DateTime      @default(now())
+  total_price     Float
   deliverytype    Delivery_type @relation(fields: [delivery_type], references: [delivery_type_id])
   material        Material      @relation(fields: [material_id], references: [material_id])
   order           Order         @relation(fields: [order_id], references: [order_id])
 }
+
 model Delivery_type {
   delivery_type_id   Int           @id @default(autoincrement())
   delivery_type_name String        @db.VarChar(255)
@@ -64,17 +66,17 @@ model Delivery_type {
 model Material {
   material_id     Int           @id @default(autoincrement())
   user_id         Int
-  material_type   Int
   template_id     Int
   file_name       String        @db.VarChar(50)
-  file_url        String
   material_object Json
+  createdDate     DateTime      @default(now())
+  description     String?
+  paper_type      String
   quantity        Int
   side            Int
-  paper_type      String
-  description     String?
-  total_price      Float
-  createdDate     DateTime      @default(now())
+  total_price     Float
+  material_type   Int
+  file_url        String
   template        Templates     @relation(fields: [template_id], references: [template_id])
   user            User          @relation(fields: [user_id], references: [user_id])
   order_detail    OrderDetail[]
@@ -82,10 +84,10 @@ model Material {
 
 model Templates {
   template_id   Int        @id @default(autoincrement())
-  template_name String     @unique @db.VarChar(50)
+  template_name String     @db.VarChar(50)
   price         Float
   image_url     String?
-  design_object Json
+  design_object String
   createdDate   DateTime   @default(now())
   updatedDate   DateTime   @updatedAt
   material      Material[]

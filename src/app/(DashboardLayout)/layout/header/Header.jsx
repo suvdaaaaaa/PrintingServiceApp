@@ -44,6 +44,9 @@ const Header = ({ toggleMobileSidebar }) => {
                 <Logo />
             </LogoWrapper>
             <Stack spacing={1} direction="row" alignItems="center">
+                <div>Users</div>
+                <div>Templates</div>
+                <div>Orders</div>
                 {user ? (
                     <Profile />
                 ) : (

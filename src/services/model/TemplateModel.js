@@ -13,12 +13,6 @@ export const getTemplatesModel = async () => {
 export const getTemplateByIdModel = async (id) => {
   try {
     const template = await prisma.templates.findUnique({
-      select: {
-        template_id: true,
-        template_name: true,
-        price: true,
-        image_url: true
-      },
       where: {
         template_id: id,
       },
@@ -31,27 +25,20 @@ export const getTemplateByIdModel = async (id) => {
   }
 };
 export const createTemplateModel = async (data) => {
-  const { template_id, template_name, price, image_url, design_object } = data;
-
-  const now = new Date();
-  const created_date = now.toISOString();
-  const updated_date = now.toISOString();
+  const { template_name, price, image_url, design_object } = data;
 
   try {
     const temp = await prisma.templates.create({
       data: {
-        template_id,
         template_name,
         price,
         image_url,
-        design_object: JSON.parse(JSON.stringify(design_object)),
-        // created_date,
-        // updated_date
+        design_object,
       },
     });
     return temp;
   } catch (error) {
-    console.error("Error in createTemplateModel:", error);
+    console.error("Error in createTemplateModel:", `${error}`);
     throw new Error("Failed to fetch create template");
   }
 };
