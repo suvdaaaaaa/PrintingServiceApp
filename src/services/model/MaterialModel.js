@@ -1,27 +1,6 @@
 import prisma from "@/utils/prisma";
-import jwt from 'jsonwebtoken';
-
-// const getUserIdFromToken = (token) => {
-//   try {
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     return decoded.user_id
-//   } catch (error) {
-//     console.error("Invalid token:", error);
-//     return null;
-//   }
-// };
 
 export const createMaterialModel = async (data) => {
-  // const user_id = getUserIdFromToken(token);
-
-  // if (!user_id) {
-  //   return {
-  //     status: 401,
-  //     message: "Unauthorized",
-  //     result: null,
-  //   };
-  // }
-
   const { user_id, side, quantity, paper_type, description, file_url, total_price } = data;
 
   try {
@@ -54,5 +33,15 @@ export const createMaterialModel = async (data) => {
       message: "Server error",
       result: `${error.message}`,
     };
+  }
+};
+
+export const getMaterialModel = async () => {
+  try {
+    const orders = await prisma.material.findMany({});
+    return orders;
+  } catch (error) {
+    console.error("Error in get templates model:", error);
+    throw new Error("Failed to fetch templates");
   }
 };

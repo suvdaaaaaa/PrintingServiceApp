@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import DashboardCard from "../shared/DashboardCard";
 import { useFormik } from "formik";
@@ -17,6 +18,7 @@ import {
 } from "@mui/material";
 import { createMaterial } from "@/services/MaterialService";
 import CloseIcon from "@mui/icons-material/Close";
+import Image from 'next/image';
 
 const validationSchema = yup.object({
     // side: yup.string().required("Талаа оруулна уу"),
@@ -26,7 +28,9 @@ const validationSchema = yup.object({
 });
 
 export default function FormsOrder() {
+    const [selectedImage, setSelectedImage] = useState(null);
     const [user, setUser] = React.useState(null);
+    const [isFormVisible, setIsFormVisible] = useState(true);
     React.useEffect(() => {
         if (typeof window !== "undefined") {
             const storage = localStorage.getItem("PSA-USER");
@@ -36,7 +40,6 @@ export default function FormsOrder() {
             }
         }
     }, []);
-    const [isFormVisible, setIsFormVisible] = useState(true);
     const formik = useFormik({
         initialValues: {
             side: 2,
@@ -80,7 +83,11 @@ export default function FormsOrder() {
         const file = event.currentTarget.files
             ? event.currentTarget.files[0]
             : null;
-        formik.setFieldValue("file_url", file);
+        if(file){
+            setSelectedImage(URL.createObjectURL(file));
+            formik.setFieldValue("file_url", file);
+
+        }
     };
 
     const calculatePrice = (values) => {
@@ -105,20 +112,43 @@ export default function FormsOrder() {
     }
 
     return (
-        <DashboardCard title="Өөрийн загвараа оруулна уу">
-            <ToastContainer />
+        <Box
+            sx = {{
+                position: "relative",
+                height: "80vh",
+                overflowY: "scroll",
+                padding: 2,
+                borderRadius: 2,
+                "&::-webkit-scrollbar": {
+                    display: "none",
+                },
+                msOverflowStyle: "none",
+                scrollbarWidth: "none",
+            }}
+            
+        >
+        <IconButton
+            onClick={closeForm}
+            sx = {{
+                   position: "absolute",
+                   top: 10,
+                   right: 10,
+                   zIndex: 10,
+                   color: "gray",
+               }}
+        >
+            <CloseIcon />
+        </IconButton>
+        <Typography
+            variant="h3"
+            component="h1"
+            align="center"
+            gutterBottom
+        >
+            Өөрийн загвараа оруулна уу!
+        </Typography>
+        <ToastContainer />
             <form onSubmit={formik.handleSubmit}>
-                <IconButton
-                    onClick={closeForm}
-                    sx={{
-                        position: "absolute",
-                        top: 10,
-                        right: 10,
-                        zIndex: 10,
-                    }}
-                >
-                    <CloseIcon />
-                </IconButton>
                 <FormControl
                     fullWidth
                     margin="normal"
@@ -246,8 +276,29 @@ export default function FormsOrder() {
                         sx={{ width: "100%", height: "56px", marginTop: 2 }}
                     >
                         Choose file
-                        <input hidden type="file" onChange={handleFileChange} />
+                        <input 
+                            hidden type="file" 
+                            onChange={handleFileChange } 
+                        />
                     </Button>
+                    <Box 
+                        sx={{ 
+                            display: 'flex', 
+                            justifyContent: 'center', 
+                            alignItems: 'center', 
+                            width: '100%', 
+                            mt: 2 
+                        }}
+                    >
+                        {selectedImage && (
+                            <Image
+                                src={selectedImage}
+                                width={600}
+                                height={300}
+                                alt="Сонгосон зураг"
+                            />
+                        )}
+                    </Box>
                     {formik.touched.file_url && formik.errors.file_url && (
                         <div style={{ color: "red", fontSize: "12px" }}>
                             {formik.errors.file_url}
@@ -255,8 +306,8 @@ export default function FormsOrder() {
                     )}
                 </FormControl>
 
-                <Typography variant="h4" color="primary" sx={{ mt: 2 }}>
-                    Үнэ: {formik.values.total_price.toFixed(2)} ₮
+                <Typography variant="h4" color="error" sx={{ mt: 2 }}>
+                    Нийт үнэ: {formik.values.total_price.toFixed(2)} ₮
                 </Typography>
 
                 <Button
@@ -269,6 +320,6 @@ export default function FormsOrder() {
                     Захиалах
                 </Button>
             </form>
-        </DashboardCard>
+        </Box>
     );
 }

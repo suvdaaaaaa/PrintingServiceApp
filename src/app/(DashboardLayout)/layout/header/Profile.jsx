@@ -76,7 +76,7 @@ const Profile = () => {
                     <ListItemIcon>
                         <IconListCheck width={20} />
                     </ListItemIcon>
-                    <ListItem component={Link} href="/profile">
+                    <ListItem component={Link} href="/history">
                         <ListItemText primary="Түүх" />
                     </ListItem>
                 </MenuItem>
