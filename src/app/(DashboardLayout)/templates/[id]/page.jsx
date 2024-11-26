@@ -1,12 +1,32 @@
-"use client";
-import React from "react";
-import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
-import BusinessCardEditor from "@/app/(DashboardLayout)/components/canvas/canvas";
-import { useParams } from "next/navigation";
+'use client';
+import React, { useEffect, useState } from 'react';
+import { Box } from '@mui/material';
+import { Suspense } from 'react';
+import Editor from '@/app/(DashboardLayout)/components/editor/editor';
+import { useParams } from 'next/navigation';
 
-const TemplateDetail = () => {
-    const params = useParams();
-    return <BusinessCardEditor id={params.id} />;
+const TemplateDetailPage = () => {
+  const params = useParams();
+  const [user, setUser] = useState(null);
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storage = localStorage.getItem('PSA-USER');
+      if (storage) {
+        console.log('S', storage);
+        setUser(JSON.parse(storage));
+      } else {
+        window.location.href = '/';
+      }
+    }
+  }, []);
+
+  return (
+    <Box>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Editor user={user} id={params.id} />
+      </Suspense>
+    </Box>
+  );
 };
 
-export default TemplateDetail;
+export default TemplateDetailPage;

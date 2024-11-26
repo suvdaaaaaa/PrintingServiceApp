@@ -1,14 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
-import { CardContent, Typography, Grid, Avatar } from "@mui/material";
+import { CardContent, Typography, Grid, Avatar, Button } from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Stack } from "@mui/system";
 import BlankCard from "@/app/(DashboardLayout)/components/shared/BlankCard";
 import DashboardCard from "../shared/DashboardCard";
 
-const TemplateList = ({ temp }) => {
-
-    return (
-        <DashboardCard title="Нэрийн хуудасны загварууд">
+const TemplateList = ({ temp, user }) => {
+    const [loading, setLoading] = React.useState(true);
+    console.log("user", user);
+    useEffect(() => {
+        setLoading(false);
+    }, [user]);
+    return loading ? (
+        <div>Loading...</div>
+    ) : (
+        <DashboardCard
+            title="Нэрийн хуудасны загварууд"
+            action={
+                user.role == 1 && (
+                    <Button
+                        href="/dashboard/templates/new"
+                        color="primary"
+                        variant="contained"
+                        startIcon={<AddCircleOutlineIcon />}
+                    >
+                        Add
+                    </Button>
+                )
+            }
+        >
             <Grid container spacing={3}>
                 {temp && temp.length > 0 ? (
                     temp.map((template) => (
@@ -21,7 +42,9 @@ const TemplateList = ({ temp }) => {
                         >
                             <BlankCard>
                                 <Link
-                                    href={`/templates/${template.template_id}`}
+                                    href={`${
+                                        user.role == 1 ? "/dashboard/" : "/"
+                                    }templates/${template.template_id}`}
                                 >
                                     <Avatar
                                         src={template.image_url}

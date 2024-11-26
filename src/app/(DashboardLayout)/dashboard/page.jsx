@@ -416,25 +416,6 @@ function Dashboard() {
                                 </Stack>
                             </>
                         )}
-
-                        {/* <button onClick={() => addRect(canvas)}>
-                            Rectangle
-                        </button>
-                        <br />
-                        <button onClick={() => changeColor("red")}>Red</button>
-                        <br />
-                        <button onClick={() => changeColor("green")}>
-                            Green
-                        </button>
-                        <br />
-                        <button onClick={() => changeColor("blue")}>
-                            Blue
-                        </button>
-                        <br />
-                        <button>Text</button>
-                        <br />
-                        <button onClick={() => changeBold()}>Bold</button>
-                        <br /> */}
                     </CardContent>
                 </Card>
             </Grid>

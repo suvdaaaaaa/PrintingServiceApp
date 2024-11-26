@@ -42,3 +42,25 @@ export const createTemplateModel = async (data) => {
     throw new Error("Failed to fetch create template");
   }
 };
+
+export const updateTemplateModel = async (data) => {
+  const { template_id, template_name, price, image_url, design_object } = data;
+
+  try {
+    const temp = await prisma.templates.update({
+      where: {
+        template_id,
+      },
+      data: {
+        template_name,
+        price,
+        image_url,
+        design_object,
+      },
+    });
+    return temp;
+  } catch (error) {
+    console.error("Error in updateTemplateModel:", `${error}`);
+    throw new Error("Failed to fetch update template");
+  }
+};

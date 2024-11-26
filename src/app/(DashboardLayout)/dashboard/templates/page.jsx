@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import TemplateList from "../components/template/templates";
+import TemplateList from "@/app/(DashboardLayout)/components/template/templates";
 import { getTemplates } from "@/services/TemplateService";
 import { Box } from "@mui/material";
 

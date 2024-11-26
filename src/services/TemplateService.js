@@ -1,5 +1,5 @@
 const getTemplates = async () => {
-  const res = await fetch(`api/templates`, {
+  const res = await fetch(`/api/templates`, {
     cache: "no-cache",
   });
 
@@ -33,4 +33,16 @@ const createTemplate = async (data) => {
   return res;
 };
 
-export { getTemplate, getTemplates, createTemplate };
+const updateTemplate = async (data) => {
+  const res = await fetch(`/api/templates/create`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return res;
+};
+
+export { getTemplate, getTemplates, createTemplate, updateTemplate };
