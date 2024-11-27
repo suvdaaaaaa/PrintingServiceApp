@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import "react-toastify/dist/ReactToastify.css";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { Grid } from "@mui/system";
 import React from "react";
@@ -64,6 +63,14 @@ const Profile = () => {
             console.log("data", data);
             if (data.status === 200) {
                 toast.success(data.message);
+                localStorage.setItem('PSA-USER', JSON.stringify(data.result));
+                localStorage.setItem(
+                    'PSA-ADMIN',
+                    JSON.stringify({
+                        data: '',
+                        name: 'admin'   
+                    })
+                );
             } else {
                 toast.error(data.message);
             }
@@ -96,7 +103,6 @@ const Profile = () => {
                 >
                     Хувийн мэдээлэл
                 </Typography>
-                <ToastContainer />
                 <ToastContainer />
                 <form onSubmit={formik.handleSubmit}>
                     <Stack spacing={3}>

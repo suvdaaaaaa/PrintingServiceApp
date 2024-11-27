@@ -89,9 +89,11 @@ export const loginUserModel = async (email, pwd) => {
     const user = await prisma.user.findUnique({
       select: {
         user_id: true,
+        lname: true,
         fname: true,
         email: true,
         phone: true,
+        address: true,
         role: true,
         password: true,
       },
@@ -149,10 +151,19 @@ export const updateUserModel = async (data) => {
       },
     });
 
-    return updatedUser;
+     return {
+       status: 200,
+       message: "Амжилттай хадгаллаа",
+       result: updatedUser,
+     };
   } catch (error) {
     console.error("Error updating user:", error);
-    throw new Error("Failed to update user");
+
+    return {
+      status: 500,
+      message: "Server error",
+      result: `${error.message}`,
+    };
   }
 };
 
