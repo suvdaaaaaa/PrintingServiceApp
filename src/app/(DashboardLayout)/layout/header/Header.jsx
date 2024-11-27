@@ -46,8 +46,8 @@ const Header = ({ toggleMobileSidebar }) => {
       <Stack spacing={1} direction="row" alignItems="center">
         {user && user.role == 1 && (
           <>
-            <Link href="/dashboard/templates">Templates</Link>
-            <Link href="/dashboard/orders">Orders</Link>
+            <Link href="/dashboard/templates">Загвар</Link>
+            <Link href="/dashboard/orders">Захиалга</Link>
           </>
         )}
         {user ? (

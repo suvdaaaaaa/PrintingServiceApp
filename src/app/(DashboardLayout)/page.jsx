@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import { Box, Button, Stack, Typography, Modal } from "@mui/material";
-import ImageListHome from "./components/images/ImageList";
+import ImageListHome from "./components/imagesDashboard/ImageList";
 import Link from "next/link";
 import { keyframes } from "@mui/system";
-import FormsOrder from "./components/formsOrder/forms";
+import FormsOrder from "./components/formsUpload/forms";
 import { useState } from "react";
 
 const gradientAnimation = keyframes`

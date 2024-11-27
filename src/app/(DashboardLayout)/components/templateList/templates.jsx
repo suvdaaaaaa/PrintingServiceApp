@@ -25,7 +25,7 @@ const TemplateList = ({ temp, user }) => {
                         variant="contained"
                         startIcon={<AddCircleOutlineIcon />}
                     >
-                        Add
+                        Загвар нэмэх
                     </Button>
                 )
             }

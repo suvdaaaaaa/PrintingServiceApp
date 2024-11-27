@@ -343,7 +343,7 @@ function Editor({ user, id }) {
             </ToggleButtonGroup>
 
             <Stack direction="column" mt={2} gap={1}>
-              <Typography variant="h6">Background Color</Typography>
+              <Typography variant="h6">Дэвсгэр өнгө</Typography>
               <ToggleButtonGroup>
                 <MuiColorInput
                   format="hex"
@@ -354,7 +354,7 @@ function Editor({ user, id }) {
             </Stack>
             {colorToolbar && (
               <Stack direction="column" mt={2} gap={1}>
-                <Typography variant="h6">Color</Typography>
+                <Typography variant="h6">Өнгө</Typography>
                 <ToggleButtonGroup>
                   <MuiColorInput
                     format="hex"
@@ -367,7 +367,7 @@ function Editor({ user, id }) {
             {fontToolbar && (
               <>
                 <Stack direction="column" mt={2} gap={1}>
-                  <Typography variant="h6">Font format</Typography>
+                  <Typography variant="h6">Текст формат</Typography>
                   <ToggleButtonGroup
                     value={formats}
                     onChange={handleFormat}
@@ -385,7 +385,7 @@ function Editor({ user, id }) {
                   </ToggleButtonGroup>
                 </Stack>
                 <Stack direction="column" mt={2} gap={1}>
-                  <Typography variant="h6">Text Aligment</Typography>
+                  <Typography variant="h6">Текст байрлуулалт</Typography>
                   <ToggleButtonGroup
                     value={alignment}
                     exclusive
@@ -450,7 +450,7 @@ function Editor({ user, id }) {
                   endIcon={<ClearIcon />}
                   onClick={() => setOpen(true)}
                 >
-                  Clear
+                  Устгах
                 </Button>
                 <Button
                   variant="outlined"
@@ -505,7 +505,7 @@ function Editor({ user, id }) {
                     }
                   }}
                 >
-                  {user && user.role == 1 ? 'Save' : 'Order'}
+                  {user && user.role == 1 ? 'Хадгалах' : 'Захиалах'}
                 </Button>
               </Grid>
             </Grid>
@@ -534,15 +534,15 @@ function Editor({ user, id }) {
                 }
               }}
             >
-              <DialogTitle>Warning</DialogTitle>
+              <DialogTitle>Анхааруулга</DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  Are you sure you want to clear the canvas
+                  Та устгахдаа итгэлтэй байна уу?
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => setOpen(false)}>Cancel</Button>
-                <Button type="submit">Yes</Button>
+                <Button onClick={() => setOpen(false)}>Цуцлах</Button>
+                <Button type="submit">Тийм</Button>
               </DialogActions>
             </Dialog>
           </React.Fragment>

@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 
 import { Suspense } from "react";
 import { getMaterials } from "@/services/MaterialService";
-import OrderList from "../components/history/history";
+import OrderList from "../components/orderHistory/history";
 
 const HistoryPage = ({ searchParams }) => {
     const [user, setUser] = useState(null);
