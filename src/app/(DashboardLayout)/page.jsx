@@ -1,11 +1,12 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Button, Stack, Typography, Modal } from "@mui/material";
 import ImageListHome from "./components/imagesDashboard/ImageList";
 import Link from "next/link";
 import { keyframes } from "@mui/system";
 import FormsOrder from "./components/formsUpload/forms";
 import { useState } from "react";
+import MSidebar from "./layout/sidebar/Sidebar";
 
 const gradientAnimation = keyframes`
   0% { background-position: 0% 50%; }
@@ -20,6 +21,7 @@ const glowingAnimation = keyframes`
 
 const Dashboard = () => {
     const [user, setUser] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
     React.useEffect(() => {
         if (typeof window !== "undefined") {
             const storage = localStorage.getItem("PSA-USER");
@@ -30,6 +32,10 @@ const Dashboard = () => {
         }
     }, []);
 
+    useEffect(() => {
+        setLoading(false);
+    }, [user]);
+
     const [showFormsOrder, setShowFormsOrder] = useState(false);
 
     const handleUploadClick = () => {
@@ -39,8 +45,18 @@ const Dashboard = () => {
     const handleClose = () => {
         setShowFormsOrder(false);
     };
+    
+    if (user && user.role == 1) {
+        return loading ? (
+            <div>Loading...</div>
+        ) : (
+            <MSidebar/>
+        );
+    }
 
-    return (
+    return loading ?(
+        <div>Loading...</div>
+    ) : (
         <Box
             sx={{
                 position: "relative",
@@ -219,7 +235,7 @@ const Dashboard = () => {
                 </Box>
             </Modal>
         </Box>
-    );
+    )
 };
 
 export default Dashboard;

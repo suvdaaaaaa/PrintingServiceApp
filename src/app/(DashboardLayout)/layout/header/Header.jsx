@@ -38,21 +38,36 @@ const Header = ({ toggleMobileSidebar }) => {
     }
   }));
 
-  return (
-    <ToolbarStyled>
-      <LogoWrapper>
-        <Logo />
-      </LogoWrapper>
-      <Stack spacing={1} direction="row" alignItems="center">
-        {user && user.role == 1 && (
-          <>
-            <Link href="/dashboard/templates">Загвар</Link>
-            <Link href="/dashboard/orders">Захиалга</Link>
-          </>
-        )}
-        {user ? (
+return (
+  <ToolbarStyled>
+    {user ? (
+      user.role === 1 ? (
+        <Stack
+          sx={{
+            position: "absolute",
+            top: 20,
+            right: 60,
+            padding: 2,
+          }}
+        >
           <Profile />
-        ) : (
+        </Stack>
+      ) : user.role === 2 ? (
+        <>
+          <LogoWrapper>
+            <Logo />
+          </LogoWrapper>
+          <Stack spacing={1} direction="row" alignItems="center">
+            <Profile />
+          </Stack>
+        </>
+      ) : null
+    ) : (
+      <>
+        <LogoWrapper>
+          <Logo />
+        </LogoWrapper>
+        <Stack spacing={1} direction="row" alignItems="center">
           <Button
             variant="contained"
             component={Link}
@@ -62,10 +77,12 @@ const Header = ({ toggleMobileSidebar }) => {
           >
             Нэвтрэх
           </Button>
-        )}
-      </Stack>
-    </ToolbarStyled>
-  );
+        </Stack>
+      </>
+    )}
+  </ToolbarStyled>
+);
+
 };
 
 Header.propTypes = {
