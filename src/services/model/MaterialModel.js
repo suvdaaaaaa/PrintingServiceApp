@@ -1,15 +1,26 @@
 import prisma from "@/utils/prisma";
 
 export const createMaterialModel = async (data) => {
-  const { user_id, side, quantity, paper_type, description, file_url, total_price } = data;
+  const {
+    user_id,
+    template_id, 
+    material_type,
+    side,
+    quantity,
+    paper_type,
+    description,
+    file_name,
+    file_url,
+    total_price
+  } = data;
 
   try {
     const newMaterial = await prisma.material.create({
       data: {
         user_id,
-        template_id: 1,
-        material_type: 1,
-        file_name: "Upload",
+        template_id,
+        material_type,
+        file_name,
         file_url,
         quantity,
         side,

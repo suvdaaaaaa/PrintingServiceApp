@@ -21,6 +21,7 @@ const getTemplate = async (id) => {
 
   return res.json();
 };
+
 const createTemplate = async (data) => {
   const res = await fetch(`/api/templates/create`, {
     method: "POST",

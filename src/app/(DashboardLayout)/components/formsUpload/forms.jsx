@@ -62,13 +62,18 @@ export default function FormsOrder() {
 
             const data = await createMaterial({
                 user_id: user.user_id,
+                template_id: 11,
+                material_type: 1,
                 side: values.side,
                 quantity: +values.quantity,
                 paper_type: values.paper_type,
                 description: values.description,
+                file_name: "Upload",
                 file_url: fileRes.result,
                 total_price: values.total_price,
             });
+
+            console.log("dataa", data);
 
             if (data.status === 200) {
                 toast.success(data.message);

@@ -36,10 +36,18 @@ export const createTemplateModel = async (data) => {
         design_object,
       },
     });
-    return temp;
+   return {
+     status: 200,
+     message: "Амжилттай хадгаллаа",
+     result: temp,
+   };
   } catch (error) {
     console.error("Error in createTemplateModel:", `${error}`);
-    throw new Error("Failed to fetch create template");
+    return {
+      status: 500,
+      message: "Server error",
+      result: `${error.message}`,
+    };
   }
 };
 
@@ -58,9 +66,17 @@ export const updateTemplateModel = async (data) => {
         design_object,
       },
     });
-    return temp;
+    return {
+      status: 200,
+      message: "Амжилттай хадгаллаа",
+      result: temp,
+    };
   } catch (error) {
     console.error("Error in updateTemplateModel:", `${error}`);
-    throw new Error("Failed to fetch update template");
+    return {
+      status: 500,
+      message: "Server error",
+      result: `${error.message}`,
+    };
   }
 };

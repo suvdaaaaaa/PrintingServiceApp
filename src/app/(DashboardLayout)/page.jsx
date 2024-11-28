@@ -3,10 +3,11 @@ import React, { useEffect } from "react";
 import { Box, Button, Stack, Typography, Modal } from "@mui/material";
 import ImageListHome from "./components/imagesDashboard/ImageList";
 import Link from "next/link";
-import { keyframes } from "@mui/system";
+import { Grid, keyframes } from "@mui/system";
 import FormsOrder from "./components/formsUpload/forms";
 import { useState } from "react";
 import MSidebar from "./layout/sidebar/Sidebar";
+import Orders from "./components/orders/Orders";
 
 const gradientAnimation = keyframes`
   0% { background-position: 0% 50%; }
@@ -50,7 +51,10 @@ const Dashboard = () => {
         return loading ? (
             <div>Loading...</div>
         ) : (
-            <MSidebar/>
+            <Grid container spacing={2}>
+                <MSidebar/>
+                <Orders />
+            </Grid>
         );
     }
 

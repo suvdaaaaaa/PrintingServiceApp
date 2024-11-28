@@ -7,6 +7,10 @@ import {
   Card,
   CardContent,
   CardHeader,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography
@@ -34,7 +38,11 @@ import SaveIcon from '@mui/icons-material/Save';
 import ClearIcon from '@mui/icons-material/Clear';
 import { MuiColorInput } from 'mui-color-input';
 import { styled } from '@mui/material/styles';
-import { Edit } from '@mui/icons-material';
+import {
+  ToastContainer,
+  toast
+} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -194,13 +202,15 @@ function Editor({ user, id }) {
   const canvasRef = useRef(null);
   const [formName, setFormName] = React.useState('Hello');
   const [formPrice, setFormPrice] = React.useState(10000);
+  const [formSide, setFormSide] = React.useState(2);
+  const [formQuantity, setFormQuantity] = React.useState();
+  const [formPaperType, setFormPaperType] = useState();
   const [open, setOpen] = React.useState(false);
   const [fontToolbar, setFontToolbar] = React.useState(false);
   const [colorToolbar, setColorToolbar] = React.useState(false);
   const [color, setColor] = React.useState('#ffffff');
   const [formats, setFormats] = React.useState(() => []);
   const [alignment, setAlignment] = React.useState('left');
-
   const [bgColor, setBgColor] = React.useState('#ffffff');
 
   const handleFormat = (event, newFormats) => {
@@ -301,9 +311,67 @@ function Editor({ user, id }) {
         {user && user.role == 2 && (
           <Card sx={{ mb: 2 }}>
             <CardHeader title="Properties" />
-            <CardContent sx={{ pt: 0 }}></CardContent>
+            <CardContent sx={{ pt: 0 }}>
+              <Grid container>
+                <FormControl
+                    fullWidth
+                    margin="normal"
+                >
+                  <InputLabel>Тал</InputLabel>
+                  <Select
+                    id="side"
+                    name="side"
+                    value={formSide}
+                    label="side"
+                  >
+                    <MenuItem value="2">2</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl
+                  fullWidth
+                  margin="normal"
+                >
+                  <InputLabel>Ширхэг</InputLabel>
+                  <Select
+                      id="quantity"
+                      name="quantity"
+                      value={formQuantity}
+                      label="quantity"
+                  >
+                      <MenuItem value="50">50</MenuItem>
+                      <MenuItem value="100">100</MenuItem>
+                      <MenuItem value="200">200</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl
+                    fullWidth
+                    margin="normal"
+                >
+                  <InputLabel>Цаасны төрөл</InputLabel>
+                  <Select
+                      id="paper_type"
+                      name="paper_type"
+                      value={formPaperType}
+                      label="paper_type "
+                  >
+                      <MenuItem value="Mat">Матт цаас</MenuItem>
+                      <MenuItem value="White">Extra white</MenuItem>
+                      <MenuItem value="Matte Gloss">
+                          Матт цаас + Матт бүрэлттэй
+                      </MenuItem>
+                      <MenuItem value="Soft Gloss">
+                          Матт цаас + Зөөлөн бүрэлттэй
+                      </MenuItem>
+                      <MenuItem value="Gloss">
+                          Матт цаас + Гялгар бүрэлттэй
+                      </MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </CardContent>
           </Card>
         )}
+        <ToastContainer/>
         <Card>
           <CardHeader title="Toolbar" />
           <CardContent sx={{ pt: 0 }}>
@@ -425,7 +493,7 @@ function Editor({ user, id }) {
                   variant="outlined"
                   size="small"
                   value={formName}
-                  label="Template name"
+                  label="Загварын нэр"
                   onChange={(e) => setFormName(e.target.value)}
                 />
                 <TextField
@@ -433,7 +501,7 @@ function Editor({ user, id }) {
                   size="small"
                   type="number"
                   value={formPrice}
-                  label="Price"
+                  label="Үнэ"
                   onChange={(e) => setFormPrice(e.target.value)}
                 />
               </Grid>
@@ -485,23 +553,63 @@ function Editor({ user, id }) {
                           })
                         });
                         const json = await data.json();
-                        console.log(json);
+                        if (json.data.status === 200) {
+                          toast.success(json.message);
+                        } else {
+                          toast.error(json.message);
+                        }
+                        console.log("json", json);
                       }
                     }
 
                     if (user.role == 2) {
-                      var user_id = user.id;
-                      var template_id = id;
-                      var file_name = formName;
-                      var paper_type = '';
-                      var quantity = '';
-                      var side = '';
-                      var total_price = formPrice;
-                      var material_type = 2;
+                      var paper_type = formPaperType;
+                      var quantity = formQuantity;
+                      var side = formSide;
                       var dataURL = canvasRef.current.toDataURL({
                         format: 'jpeg',
                         quality: 0.75
                       });
+
+
+                       if (
+                         side === '' ||
+                         quantity === '' || 
+                         paper_type === '' ||
+                         canvasRef.current.getObjects().length === 0
+                       ) {
+                         alert('Please fill all the fields');
+                       } else {
+
+                         const data = await fetch(`/api/templates/${id}`, {
+                           method: 'POST',
+                           headers: {
+                             'Content-Type': 'application/json'
+                           },
+                           body: JSON.stringify({
+                              user_id: user.id,
+                              template_id: id,
+                              material_type: 2,
+                              paper_type: formPaperType,
+                              quantity: formQuantity,
+                              side: formSide,
+                              description: "",
+                              file_name: formName,
+                              file_url: dataURL,
+                              price: +formPrice,
+                              // design_object: JSON.stringify(
+                              //   canvasRef.current.toJSON()
+                              // )
+                           })
+                         });
+                         const json = await data.json();
+                          if (json.data.status === 200) {
+                            toast.success(json.message);
+                          } else {
+                            toast.error(json.message);
+                          }
+                          console.log(json);
+                       }
                     }
                   }}
                 >
