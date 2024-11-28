@@ -254,14 +254,6 @@ function Editor({ user, id }) {
     canvasRef.current.renderAll();
   };
 
-
-  const calculatePrice = () => {
-    const basePrice = formPrice;
-    const quantityMultiplier = Number(formQuantity) / 50;
-    const materialMultiplier = formPaperType === "Mat" ? 1 : 1.2;
-    return basePrice * quantityMultiplier * materialMultiplier;
-  };
-
   useEffect(() => {
     initCanvas();
     return () => canvasRef.current.dispose();
@@ -365,9 +357,7 @@ function Editor({ user, id }) {
                       id="paper_type"
                       name="paper_type"
                       value={formPaperType}
-                      onChange = {
-                        (e) => setFormPaperType(e.target.value)
-                      }
+                      onChange={(e) => setFormPaperType(e.target.value)}
                       label="paper_type"
                   >
                       <MenuItem value="Mat">Матт цаас</MenuItem>
@@ -521,12 +511,19 @@ function Editor({ user, id }) {
                   onChange={(e) => setFormPrice(e.target.value)}
                 />
               </Grid>
-            ) : (
-              <Grid container spacing={2}>
-                <Typography variant="h6">{formName}</Typography>
-                <Typography variant="h6">Үнэ: {calculatePrice().toFixed(2)}₮</Typography>
-              </Grid>
-            )}
+            ) : ( () => {
+                const calculatePrice = () => {
+                  const quantityMultiplier = Number(formQuantity) / 50;
+                  const materialMultiplier = formPaperType === "Mat" ? 1 : 1.5;
+                  return formPrice * quantityMultiplier * materialMultiplier;
+                };
+              return (
+                <Grid container spacing={2}>
+                  <Typography variant="h6">{formName}</Typography>
+                  <Typography variant="h6">Үнэ: {calculatePrice().toFixed(2)}₮</Typography>
+                </Grid>
+              );
+            }) () }
             <Grid>
               <Grid container spacing={1}>
                 <Button
