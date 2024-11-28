@@ -203,8 +203,8 @@ function Editor({ user, id }) {
   const [formName, setFormName] = React.useState('Hello');
   const [formPrice, setFormPrice] = React.useState(10000);
   const [formSide, setFormSide] = React.useState(2);
-  const [formQuantity, setFormQuantity] = React.useState();
-  const [formPaperType, setFormPaperType] = useState();
+  const [formQuantity, setFormQuantity] = React.useState(50);
+  const [formPaperType, setFormPaperType] = React.useState('Mat');
   const [open, setOpen] = React.useState(false);
   const [fontToolbar, setFontToolbar] = React.useState(false);
   const [colorToolbar, setColorToolbar] = React.useState(false);
@@ -252,6 +252,14 @@ function Editor({ user, id }) {
     setBgColor(newValue);
     canvasRef.current.backgroundColor = newValue;
     canvasRef.current.renderAll();
+  };
+
+
+  const calculatePrice = () => {
+    const basePrice = formPrice;
+    const quantityMultiplier = Number(formQuantity) / 50;
+    const materialMultiplier = formPaperType === "Mat" ? 1 : 1.2;
+    return basePrice * quantityMultiplier * materialMultiplier;
   };
 
   useEffect(() => {
@@ -303,6 +311,7 @@ function Editor({ user, id }) {
     }
 
     return canvasRef.current;
+    
   };
 
   return (
@@ -322,6 +331,7 @@ function Editor({ user, id }) {
                     id="side"
                     name="side"
                     value={formSide}
+                    onChange={(e) => setFormSide(e.target.value)}
                     label="side"
                   >
                     <MenuItem value="2">2</MenuItem>
@@ -336,6 +346,9 @@ function Editor({ user, id }) {
                       id="quantity"
                       name="quantity"
                       value={formQuantity}
+                      onChange = {
+                        (e) => setFormQuantity(e.target.value)
+                      }
                       label="quantity"
                   >
                       <MenuItem value="50">50</MenuItem>
@@ -352,7 +365,10 @@ function Editor({ user, id }) {
                       id="paper_type"
                       name="paper_type"
                       value={formPaperType}
-                      label="paper_type "
+                      onChange = {
+                        (e) => setFormPaperType(e.target.value)
+                      }
+                      label="paper_type"
                   >
                       <MenuItem value="Mat">Матт цаас</MenuItem>
                       <MenuItem value="White">Extra white</MenuItem>
@@ -508,7 +524,7 @@ function Editor({ user, id }) {
             ) : (
               <Grid container spacing={2}>
                 <Typography variant="h6">{formName}</Typography>
-                <Typography variant="h6">{formPrice}</Typography>
+                <Typography variant="h6">Үнэ: {calculatePrice().toFixed(2)}₮</Typography>
               </Grid>
             )}
             <Grid>
@@ -554,23 +570,19 @@ function Editor({ user, id }) {
                         });
                         const json = await data.json();
                         if (json.data.status === 200) {
-                          toast.success(json.message);
+                          toast.success(json.data.message);
                         } else {
-                          toast.error(json.message);
+                          toast.error(json.data.message);
                         }
                         console.log("json", json);
                       }
                     }
 
                     if (user.role == 2) {
-                      var paper_type = formPaperType;
-                      var quantity = formQuantity;
-                      var side = formSide;
                       var dataURL = canvasRef.current.toDataURL({
                         format: 'jpeg',
                         quality: 0.75
                       });
-
 
                        if (
                          side === '' ||
@@ -587,28 +599,28 @@ function Editor({ user, id }) {
                              'Content-Type': 'application/json'
                            },
                            body: JSON.stringify({
-                              user_id: user.id,
-                              template_id: id,
+                              user_id: user.user_id,
+                              template_id: +id,
                               material_type: 2,
                               paper_type: formPaperType,
-                              quantity: formQuantity,
+                              quantity: +formQuantity,
                               side: formSide,
                               description: "",
                               file_name: formName,
                               file_url: dataURL,
-                              price: +formPrice,
+                              total_price: +formPrice,
                               // design_object: JSON.stringify(
                               //   canvasRef.current.toJSON()
                               // )
                            })
                          });
                          const json = await data.json();
-                          if (json.data.status === 200) {
+                          if (json.status === 200) {
                             toast.success(json.message);
                           } else {
                             toast.error(json.message);
                           }
-                          console.log(json);
+                          console.log("json", json);
                        }
                     }
                   }}

@@ -14,6 +14,8 @@ export const createMaterialModel = async (data) => {
     total_price
   } = data;
 
+  console.log("data", data);
+
   try {
     const newMaterial = await prisma.material.create({
       data: {
