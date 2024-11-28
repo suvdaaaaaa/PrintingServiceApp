@@ -254,6 +254,13 @@ function Editor({ user, id }) {
     canvasRef.current.renderAll();
   };
 
+
+  const calculatePrice = () => {
+    const quantityMultiplier = Number(formQuantity) / 50;
+    const materialMultiplier = formPaperType === "Mat" ? 1 : 1.2;
+    return formPrice * quantityMultiplier * materialMultiplier;
+  };
+
   useEffect(() => {
     initCanvas();
     return () => canvasRef.current.dispose();
@@ -511,19 +518,12 @@ function Editor({ user, id }) {
                   onChange={(e) => setFormPrice(e.target.value)}
                 />
               </Grid>
-            ) : ( () => {
-                const calculatePrice = () => {
-                  const quantityMultiplier = Number(formQuantity) / 50;
-                  const materialMultiplier = formPaperType === "Mat" ? 1 : 1.5;
-                  return formPrice * quantityMultiplier * materialMultiplier;
-                };
-              return (
-                <Grid container spacing={2}>
+            ) : ( 
+                <Grid>
                   <Typography variant="h6">{formName}</Typography>
                   <Typography variant="h6">Үнэ: {calculatePrice().toFixed(2)}₮</Typography>
                 </Grid>
-              );
-            }) () }
+            ) }
             <Grid>
               <Grid container spacing={1}>
                 <Button
@@ -605,7 +605,7 @@ function Editor({ user, id }) {
                               description: "",
                               file_name: formName,
                               file_url: dataURL,
-                              total_price: +formPrice,
+                              total_price: calculatePrice(),
                               // design_object: JSON.stringify(
                               //   canvasRef.current.toJSON()
                               // )
