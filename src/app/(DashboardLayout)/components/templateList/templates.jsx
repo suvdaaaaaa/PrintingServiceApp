@@ -8,7 +8,6 @@ import DashboardCard from "../shared/DashboardCard";
 
 const TemplateList = ({ temp, user }) => {
     const [loading, setLoading] = React.useState(true);
-    console.log("user", user);
     useEffect(() => {
         setLoading(false);
     }, [user]);

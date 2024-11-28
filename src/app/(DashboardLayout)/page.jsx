@@ -51,7 +51,7 @@ const Dashboard = () => {
     return loading ? (
       <div>Loading...</div>
     ) : (
-      <Grid container spacing={2}>
+      <Grid>
         <MSidebar />
         <Orders />
       </Grid>
@@ -108,7 +108,7 @@ const Dashboard = () => {
           <Typography
             variant="h1"
             sx={{
-              fontSize: { xs: '2.4rem', md: '2.4rem' },
+              fontSize: { xs: '2.3rem', md: '2.3rem' },
               fontWeight: 700,
               color: '#ffffff',
               lineHeight: 1.2,
@@ -121,13 +121,13 @@ const Dashboard = () => {
           <Typography
             variant="h2"
             sx={{
-              fontSize: { xs: '0.9rem', md: '0.9rem' },
+              fontSize: { xs: '0.8rem', md: '0.8rem' },
               color: 'rgba(255,255,255,0.9)',
               textShadow: '1px 1px 6px rgba(0,0,0,0.3)',
               lineHeight: 1.6
             }}
           >
-            Хэвлэлийн газарт биечлэн очих шаардлагагүйгээр амар хялбараар хэвлэх
+            Хэвлэлийн газарт очих шаардлагагүйгээр амар хялбараар хэвлэх
             боломж
           </Typography>
         </Box>

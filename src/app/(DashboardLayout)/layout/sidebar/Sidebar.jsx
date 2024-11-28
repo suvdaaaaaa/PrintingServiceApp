@@ -47,7 +47,7 @@ const MSidebar = ({
             },
           }}
         >
-        <Box padding={3}>
+        <Box padding={2}>
           <Logo />
         </Box>
           {/* Sidebar Box */}

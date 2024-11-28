@@ -53,7 +53,7 @@ const products = [
 const Orders = () => {
     return (
 
-        <DashboardCard title="Захиалгууд">
+        <DashboardCard title="Сүүлийн үеийн захиалга">
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
                     aria-label="simple table"
