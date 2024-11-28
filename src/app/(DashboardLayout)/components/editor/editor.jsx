@@ -393,6 +393,12 @@ function Editor({ user, id }) {
     canvasRef.current.renderAll();
   };
 
+  const calculatePrice = () => {
+    const quantityMultiplier = Number(formQuantity) / 50;
+    const materialMultiplier = formPaperType === 'Mat' ? 1 : 1.2;
+    return formPrice * quantityMultiplier * materialMultiplier;
+  };
+
   useEffect(() => {
     calculatePrice(formQuantity, formPaperType, formPrice);
     initCanvas();
