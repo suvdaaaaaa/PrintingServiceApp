@@ -3,14 +3,17 @@ import * as fabric from 'fabric';
 import React, { useState, useEffect, useRef } from 'react';
 import Grid from '@mui/material/Grid2';
 import {
+  Box,
   Button,
   Card,
   CardContent,
   CardHeader,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
+  Slider,
   Stack,
   TextField,
   Typography
@@ -36,13 +39,21 @@ import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import SaveIcon from '@mui/icons-material/Save';
 import ClearIcon from '@mui/icons-material/Clear';
+import CloseIcon from '@mui/icons-material/Close';
 import { MuiColorInput } from 'mui-color-input';
 import { styled } from '@mui/material/styles';
-import {
-  ToastContainer,
-  toast
-} from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Image from 'next/image';
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2)
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1)
+  }
+}));
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -180,8 +191,8 @@ const addText = (canvi) => {
     left: 50,
     top: 10,
     width: 200,
-    fontSize: 60,
-    fontFamily: 'Pacifico',
+    fontSize: 20,
+    fontFamily: 'Arial',
     fill: '#000000'
   });
 
@@ -206,12 +217,129 @@ function Editor({ user, id }) {
   const [formQuantity, setFormQuantity] = React.useState(50);
   const [formPaperType, setFormPaperType] = React.useState('Mat');
   const [open, setOpen] = React.useState(false);
+  const [modal, setModal] = useState(false);
   const [fontToolbar, setFontToolbar] = React.useState(false);
   const [colorToolbar, setColorToolbar] = React.useState(false);
   const [color, setColor] = React.useState('#ffffff');
+  const [fontFamily, setFontFamily] = React.useState('Arial');
+  const [fontSize, setFontSize] = React.useState('20');
   const [formats, setFormats] = React.useState(() => []);
   const [alignment, setAlignment] = React.useState('left');
   const [bgColor, setBgColor] = React.useState('#ffffff');
+  const [calculatedPrice, setCalculatedPrice] = useState(0);
+
+  const PaymentButton = ({ img, name }) => {
+    return (
+      <Box
+        sx={{
+          padding: 2,
+          width: 120,
+          border: '1px solid #dedede',
+          borderRadius: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          cursor: 'pointer'
+        }}
+        onClick={async () => {
+          console.log('clicked');
+          if (user.role == 1) {
+            if (
+              formName === '' ||
+              formPrice === '' ||
+              canvasRef.current.getObjects().length === 0
+            ) {
+              alert('Please fill all the fields');
+            } else {
+              var dataURL = canvasRef.current.toDataURL({
+                format: 'jpeg',
+                quality: 0.75
+              });
+
+              const data = await fetch(`/api/templates/create`, {
+                method: id ? 'PUT' : 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  template_id: id ? +id : null,
+                  template_name: formName,
+                  price: +formPrice,
+                  image_url: dataURL,
+                  design_object: JSON.stringify(canvasRef.current.toJSON())
+                })
+              });
+              const json = await data.json();
+              if (json.data.status === 200) {
+                toast.success(json.data.message);
+              } else {
+                toast.error(json.data.message);
+              }
+              console.log('json', json);
+            }
+          }
+
+          if (user.role == 2) {
+            var dataURL = canvasRef.current.toDataURL({
+              format: 'jpeg',
+              quality: 0.75
+            });
+
+            if (
+              side === '' ||
+              quantity === '' ||
+              paper_type === '' ||
+              canvasRef.current.getObjects().length === 0
+            ) {
+              alert('Please fill all the fields');
+            } else {
+              const data = await fetch(`/api/templates/${id}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  user_id: user.user_id,
+                  template_id: +id,
+                  material_type: 2,
+                  paper_type: formPaperType,
+                  quantity: +formQuantity,
+                  side: formSide,
+                  description: '',
+                  file_name: formName,
+                  file_url: dataURL,
+                  total_price: +calculatedPrice
+                  // design_object: JSON.stringify(
+                  //   canvasRef.current.toJSON()
+                  // )
+                })
+              });
+              const json = await data.json();
+              setModal(false);
+              if (json.status === 200) {
+                toast.success(json.message);
+              } else {
+                toast.error(json.message);
+              }
+              console.log('json', json);
+            }
+          }
+        }}
+      >
+        <Image src={img} alt={name} height={80} width={80} />
+        <Typography variant="h6">{name}</Typography>
+      </Box>
+    );
+  };
+
+  const calculatePrice = (quantity, paper_type, price) => {
+    const quantityMultiplier = Number(quantity) / 50;
+    const materialMultiplier = paper_type === 'Mat' ? 1 : 1.5;
+    let calc_price = price * quantityMultiplier * materialMultiplier;
+    setCalculatedPrice(calc_price);
+    return calc_price;
+  };
 
   const handleFormat = (event, newFormats) => {
     setFormats(newFormats);
@@ -248,6 +376,17 @@ function Editor({ user, id }) {
     canvasRef.current.renderAll();
   };
 
+  const handleChangeFontSize = (e) => {
+    setFontSize(e.target.value);
+    canvasRef.current.getActiveObject().set('fontSize', e.target.value);
+    canvasRef.current.renderAll();
+  };
+  const handleChangeFontFamily = (e) => {
+    setFontFamily(e.target.value);
+    canvasRef.current.getActiveObject().set('fontFamily', e.target.value);
+    canvasRef.current.renderAll();
+  };
+
   const handleBgChangeColor = (newValue) => {
     setBgColor(newValue);
     canvasRef.current.backgroundColor = newValue;
@@ -255,6 +394,7 @@ function Editor({ user, id }) {
   };
 
   useEffect(() => {
+    calculatePrice(formQuantity, formPaperType, formPrice);
     initCanvas();
     return () => canvasRef.current.dispose();
   }, []);
@@ -303,81 +443,12 @@ function Editor({ user, id }) {
     }
 
     return canvasRef.current;
-    
   };
 
   return (
     <Grid container spacing={2}>
       <Grid size={4}>
-        {user && user.role == 2 && (
-          <Card sx={{ mb: 2 }}>
-            <CardHeader title="Properties" />
-            <CardContent sx={{ pt: 0 }}>
-              <Grid container>
-                <FormControl
-                    fullWidth
-                    margin="normal"
-                >
-                  <InputLabel>Тал</InputLabel>
-                  <Select
-                    id="side"
-                    name="side"
-                    value={formSide}
-                    onChange={(e) => setFormSide(e.target.value)}
-                    label="side"
-                  >
-                    <MenuItem value="2">2</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl
-                  fullWidth
-                  margin="normal"
-                >
-                  <InputLabel>Ширхэг</InputLabel>
-                  <Select
-                      id="quantity"
-                      name="quantity"
-                      value={formQuantity}
-                      onChange = {
-                        (e) => setFormQuantity(e.target.value)
-                      }
-                      label="quantity"
-                  >
-                      <MenuItem value="50">50</MenuItem>
-                      <MenuItem value="100">100</MenuItem>
-                      <MenuItem value="200">200</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl
-                    fullWidth
-                    margin="normal"
-                >
-                  <InputLabel>Цаасны төрөл</InputLabel>
-                  <Select
-                      id="paper_type"
-                      name="paper_type"
-                      value={formPaperType}
-                      onChange={(e) => setFormPaperType(e.target.value)}
-                      label="paper_type"
-                  >
-                      <MenuItem value="Mat">Матт цаас</MenuItem>
-                      <MenuItem value="White">Extra white</MenuItem>
-                      <MenuItem value="Matte Gloss">
-                          Матт цаас + Матт бүрэлттэй
-                      </MenuItem>
-                      <MenuItem value="Soft Gloss">
-                          Матт цаас + Зөөлөн бүрэлттэй
-                      </MenuItem>
-                      <MenuItem value="Gloss">
-                          Матт цаас + Гялгар бүрэлттэй
-                      </MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </CardContent>
-          </Card>
-        )}
-        <ToastContainer/>
+        <ToastContainer />
         <Card>
           <CardHeader title="Toolbar" />
           <CardContent sx={{ pt: 0 }}>
@@ -441,6 +512,32 @@ function Editor({ user, id }) {
             {fontToolbar && (
               <>
                 <Stack direction="column" mt={2} gap={1}>
+                  <Typography variant="h6">Font Family</Typography>
+                  <FormControl sx={{ maxWidth: 230 }} size="small">
+                    <Select
+                      value={fontFamily}
+                      onChange={handleChangeFontFamily}
+                      displayEmpty
+                      inputProps={{ 'aria-label': 'Without label' }}
+                    >
+                      <MenuItem value="Arial">Arial</MenuItem>
+                      <MenuItem value="Verdana">Verdana</MenuItem>
+                      <MenuItem value="Times">Times</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Stack>
+                <Stack direction="column" mt={2} gap={1}>
+                  <Typography variant="h6">Font Size</Typography>
+                  <Slider
+                    value={fontSize}
+                    valueLabelDisplay="auto"
+                    min={10}
+                    max={100}
+                    onChange={handleChangeFontSize}
+                    sx={{ maxWidth: 230 }}
+                  />
+                </Stack>
+                <Stack direction="column" mt={2} gap={1}>
                   <Typography variant="h6">Текст формат</Typography>
                   <ToggleButtonGroup
                     value={formats}
@@ -486,6 +583,71 @@ function Editor({ user, id }) {
         </Card>
       </Grid>
       <Grid size={8}>
+        {user && user.role == 2 && (
+          <Card sx={{ mb: 2 }}>
+            <CardHeader title="Properties" />
+            <CardContent sx={{ pt: 0 }}>
+              <Stack direction="row" spacing={2}>
+                <FormControl fullWidth margin="normal" size="small">
+                  <InputLabel>Тал</InputLabel>
+                  <Select
+                    id="side"
+                    name="side"
+                    value={formSide}
+                    onChange={(e) => {
+                      setFormSide(e.target.value);
+                    }}
+                    label="side"
+                  >
+                    <MenuItem value="2">2</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth margin="normal" size="small">
+                  <InputLabel>Ширхэг</InputLabel>
+                  <Select
+                    id="quantity"
+                    name="quantity"
+                    value={formQuantity}
+                    onChange={(e) => {
+                      calculatePrice(e.target.value, formPaperType, formPrice);
+                      setFormQuantity(e.target.value);
+                    }}
+                    label="quantity"
+                  >
+                    <MenuItem value="50">50</MenuItem>
+                    <MenuItem value="100">100</MenuItem>
+                    <MenuItem value="200">200</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth margin="normal" size="small">
+                  <InputLabel>Цаасны төрөл</InputLabel>
+                  <Select
+                    id="paper_type"
+                    name="paper_type"
+                    value={formPaperType}
+                    onChange={(e) => {
+                      calculatePrice(formQuantity, e.target.value, formPrice);
+                      setFormPaperType(e.target.value);
+                    }}
+                    label="paper_type"
+                  >
+                    <MenuItem value="Mat">Матт цаас</MenuItem>
+                    <MenuItem value="White">Extra white</MenuItem>
+                    <MenuItem value="Matte Gloss">
+                      Матт цаас + Матт бүрэлттэй
+                    </MenuItem>
+                    <MenuItem value="Soft Gloss">
+                      Матт цаас + Зөөлөн бүрэлттэй
+                    </MenuItem>
+                    <MenuItem value="Gloss">
+                      Матт цаас + Гялгар бүрэлттэй
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
+            </CardContent>
+          </Card>
+        )}
         <Card>
           <Grid
             container
@@ -511,19 +673,12 @@ function Editor({ user, id }) {
                   onChange={(e) => setFormPrice(e.target.value)}
                 />
               </Grid>
-            ) : ( () => {
-                const calculatePrice = () => {
-                  const quantityMultiplier = Number(formQuantity) / 50;
-                  const materialMultiplier = formPaperType === "Mat" ? 1 : 1.5;
-                  return formPrice * quantityMultiplier * materialMultiplier;
-                };
-              return (
-                <Grid container spacing={2}>
-                  <Typography variant="h6">{formName}</Typography>
-                  <Typography variant="h6">Үнэ: {calculatePrice().toFixed(2)}₮</Typography>
-                </Grid>
-              );
-            }) () }
+            ) : (
+              <Grid container spacing={2}>
+                <Typography variant="h6">{formName}</Typography>
+                <Typography variant="h6">Үнэ: {calculatedPrice}₮</Typography>
+              </Grid>
+            )}
             <Grid>
               <Grid container spacing={1}>
                 <Button
@@ -537,89 +692,7 @@ function Editor({ user, id }) {
                   variant="outlined"
                   endIcon={<SaveIcon />}
                   onClick={async () => {
-                    if (user.role == 1) {
-                      if (
-                        formName === '' ||
-                        formPrice === '' ||
-                        canvasRef.current.getObjects().length === 0
-                      ) {
-                        alert('Please fill all the fields');
-                      } else {
-                        var dataURL = canvasRef.current.toDataURL({
-                          format: 'jpeg',
-                          quality: 0.75
-                        });
-
-                        const data = await fetch(`/api/templates/create`, {
-                          method: id ? 'PUT' : 'POST',
-                          headers: {
-                            'Content-Type': 'application/json'
-                          },
-                          body: JSON.stringify({
-                            template_id: id ? +id : null,
-                            template_name: formName,
-                            price: +formPrice,
-                            image_url: dataURL,
-                            design_object: JSON.stringify(
-                              canvasRef.current.toJSON()
-                            )
-                          })
-                        });
-                        const json = await data.json();
-                        if (json.data.status === 200) {
-                          toast.success(json.data.message);
-                        } else {
-                          toast.error(json.data.message);
-                        }
-                        console.log("json", json);
-                      }
-                    }
-
-                    if (user.role == 2) {
-                      var dataURL = canvasRef.current.toDataURL({
-                        format: 'jpeg',
-                        quality: 0.75
-                      });
-
-                       if (
-                         side === '' ||
-                         quantity === '' || 
-                         paper_type === '' ||
-                         canvasRef.current.getObjects().length === 0
-                       ) {
-                         alert('Please fill all the fields');
-                       } else {
-
-                         const data = await fetch(`/api/templates/${id}`, {
-                           method: 'POST',
-                           headers: {
-                             'Content-Type': 'application/json'
-                           },
-                           body: JSON.stringify({
-                              user_id: user.user_id,
-                              template_id: +id,
-                              material_type: 2,
-                              paper_type: formPaperType,
-                              quantity: +formQuantity,
-                              side: formSide,
-                              description: "",
-                              file_name: formName,
-                              file_url: dataURL,
-                              total_price: +formPrice,
-                              // design_object: JSON.stringify(
-                              //   canvasRef.current.toJSON()
-                              // )
-                           })
-                         });
-                         const json = await data.json();
-                          if (json.status === 200) {
-                            toast.success(json.message);
-                          } else {
-                            toast.error(json.message);
-                          }
-                          console.log("json", json);
-                       }
-                    }
+                    setModal(true);
                   }}
                 >
                   {user && user.role == 1 ? 'Хадгалах' : 'Захиалах'}
@@ -638,6 +711,63 @@ function Editor({ user, id }) {
               <canvas id="canvas" />
             </div>
           </CardContent>
+          <React.Fragment>
+            <BootstrapDialog
+              onClose={() => setModal(false)}
+              aria-labelledby="customized-dialog-title"
+              open={modal}
+            >
+              <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                Төлбөр төлөх
+              </DialogTitle>
+              <IconButton
+                aria-label="close"
+                onClick={() => setModal(false)}
+                sx={(theme) => ({
+                  position: 'absolute',
+                  right: 8,
+                  top: 8,
+                  color: theme.palette.grey[500]
+                })}
+              >
+                <CloseIcon />
+              </IconButton>
+              <DialogContent dividers>
+                <Typography
+                  variant="h3"
+                  component="h1"
+                  align="center"
+                  gutterBottom
+                >
+                  Төлбөрийн хэрэгсэл сонгоно уу
+                </Typography>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  spacing={2}
+                  sx={{ mt: 5, mb: 5 }}
+                >
+                  <PaymentButton img="/images/logos/qpay.jpeg" name="Qpay" />
+                  <PaymentButton
+                    img="/images/logos/social-pay.png"
+                    name="Social Pay"
+                  />
+                  <PaymentButton
+                    img="/images/logos/bank-card.png"
+                    name="Банкны карт"
+                  />
+                </Stack>
+                <Typography
+                  variant="h3"
+                  component="h1"
+                  align="center"
+                  gutterBottom
+                >
+                  Төлөх дүн: {calculatedPrice}₮
+                </Typography>
+              </DialogContent>
+            </BootstrapDialog>
+          </React.Fragment>
           <React.Fragment>
             <Dialog
               open={open}
