@@ -450,7 +450,7 @@ function Editor({ user, id }) {
       <Grid size={4}>
         <ToastContainer />
         <Card>
-          <CardHeader title="Toolbar" />
+          <CardHeader title="Хэрэгсэл" />
           <CardContent sx={{ pt: 0 }}>
             <ToggleButtonGroup>
               <ToggleButton onClick={() => addRect(canvasRef.current)}>
@@ -512,7 +512,7 @@ function Editor({ user, id }) {
             {fontToolbar && (
               <>
                 <Stack direction="column" mt={2} gap={1}>
-                  <Typography variant="h6">Font Family</Typography>
+                  <Typography variant="h6">Фонт</Typography>
                   <FormControl sx={{ maxWidth: 230 }} size="small">
                     <Select
                       value={fontFamily}
@@ -527,7 +527,7 @@ function Editor({ user, id }) {
                   </FormControl>
                 </Stack>
                 <Stack direction="column" mt={2} gap={1}>
-                  <Typography variant="h6">Font Size</Typography>
+                  <Typography variant="h6">Фонтын хэмжээ</Typography>
                   <Slider
                     value={fontSize}
                     valueLabelDisplay="auto"

@@ -37,19 +37,9 @@ const Dashboard = () => {
     setLoading(false);
   }, [user]);
 
-  const [showFormsOrder, setShowFormsOrder] = useState(false);
-
-  const handleUploadClick = () => {
-    setShowFormsOrder(true);
-  };
-
-  const handleClose = () => {
-    setShowFormsOrder(false);
-  };
-
   if (user && user.role == 1) {
     return loading ? (
-      <div>Loading...</div>
+      <div>Loading...</div> 
     ) : (
       <Grid>
         <MSidebar />
@@ -160,7 +150,6 @@ const Dashboard = () => {
                   background: 'linear-gradient(45deg, #feb47b, #ff7e5f)'
                 }
               }}
-              onClick={handleUploadClick}
             >
               Захиалга өгөх
             </Button>
@@ -213,29 +202,6 @@ const Dashboard = () => {
           }}
         />
       </Stack>
-
-      {/* Modal for FormsOrder */}
-      <Modal
-        open={showFormsOrder}
-        onClose={handleClose}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        <Box
-          sx={{
-            width: { xs: '90%', md: '50%' },
-            bgcolor: 'background.paper',
-            borderRadius: 2,
-            boxShadow: 24,
-            p: 4
-          }}
-        >
-          <FormsOrder />
-        </Box>
-      </Modal>
     </Box>
   );
 };

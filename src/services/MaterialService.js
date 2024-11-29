@@ -1,6 +1,6 @@
 
 const createMaterial = async (data) => {
-  const res = await fetch(`/api`, {
+  const res = await fetch(`/api/order`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -11,7 +11,7 @@ const createMaterial = async (data) => {
   return res.json();
 };
 
-const getMaterials = async (data) => {
+const getMaterialHistory = async (data) => {
   const res = await fetch(`/api/history`, {
     method: "POST",
     headers: {
@@ -23,5 +23,21 @@ const getMaterials = async (data) => {
   return res.json();
 };
 
+const getMaterialList = async (data) => {
+  const res = await fetch(`/api/dashboard`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 
-export { createMaterial, getMaterials };
+  return res.json();
+};
+
+
+export {
+  createMaterial,
+  getMaterialHistory,
+  getMaterialList
+};

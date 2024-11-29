@@ -1,6 +1,5 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import DashboardCard from "../shared/DashboardCard";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
@@ -62,7 +61,7 @@ export default function FormsOrder() {
 
             const data = await createMaterial({
                 user_id: user.user_id,
-                template_id: 11,
+                template_id: 0,
                 material_type: 1,
                 side: values.side,
                 quantity: +values.quantity,
@@ -71,6 +70,7 @@ export default function FormsOrder() {
                 file_name: "Upload",
                 file_url: fileRes.result,
                 total_price: values.total_price,
+                status: "PENDING",
             });
 
             console.log("dataa", data);

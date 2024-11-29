@@ -22,16 +22,30 @@ const PageWrapper = styled("div")(() => ({
 export default function RootLayout({ children }) {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+     const [user, setUser] = React.useState(null);
+     React.useEffect(() => {
+         if (typeof window !== 'undefined') {
+             const storage = localStorage.getItem('PSA-USER');
+             if (storage) {
+                 console.log(JSON.parse(storage));
+                 setUser(JSON.parse(storage));
+             }
+         }
+     }, []);
     return (
         <MainWrapper className="mainwrapper">
-            {/* ------------------------------------------- */}
-            {/* Sidebar */}
-            {/* ------------------------------------------- */}
-            <Sidebar
-                isSidebarOpen={isSidebarOpen}
-                isMobileSidebarOpen={isMobileSidebarOpen}
-                onSidebarClose={() => setMobileSidebarOpen(false)}
-            />
+        {user?.role === 1 && (
+            <>
+                {/* ------------------------------------------- */}
+                {/* Sidebar */}
+                {/* ------------------------------------------- */}
+                <Sidebar
+                    isSidebarOpen={isSidebarOpen}
+                    isMobileSidebarOpen={isMobileSidebarOpen}
+                    onSidebarClose={() => setMobileSidebarOpen(false)}
+                />
+            </>
+        )}
             {/* ------------------------------------------- */}
             {/* Main Wrapper */}
             {/* ------------------------------------------- */}

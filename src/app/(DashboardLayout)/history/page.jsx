@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 
 import { Suspense } from "react";
-import { getMaterials } from "@/services/MaterialService";
+import { getMaterialHistory } from "@/services/MaterialService";
 import OrderList from "../components/orderHistory/history";
 
 const HistoryPage = ({ searchParams }) => {
@@ -24,7 +24,7 @@ const HistoryPage = ({ searchParams }) => {
     useEffect(() => {
         async function fetchOrder() {
             try {
-                const data = await getMaterials();
+                const data = await getMaterialHistory();
                 setOrderData(data);
             } catch (error) {
                 console.error("Error fetching templates:", error);

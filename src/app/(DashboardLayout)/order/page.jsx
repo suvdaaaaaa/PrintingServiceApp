@@ -113,7 +113,8 @@ export default function Order() {
             description: formik.values.description,
             file_name: 'Upload',
             file_url: fileRes.result,
-            total_price: formik.values.total_price
+            total_price: formik.values.total_price,
+            status: "PENDING"
           });
 
           console.log('dataa', data);
@@ -192,18 +193,6 @@ export default function Order() {
           scrollbarWidth: 'none'
         }}
       >
-        {/* <IconButton
-          onClick={closeForm}
-          sx={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            zIndex: 10,
-            color: 'gray'
-          }}
-        >
-          <CloseIcon />
-        </IconButton> */}
         <Typography variant="h3" component="h1" align="center" gutterBottom>
           Өөрийн загвараа оруулна уу!
         </Typography>

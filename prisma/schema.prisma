@@ -9,40 +9,33 @@ datasource db {
 }
 
 model User {
-  user_id     Int        @id @default(autoincrement())
-  fname       String     @db.VarChar(255)
-  lname       String?    @db.VarChar(255)
-  email       String     @unique @db.VarChar(255)
-  phone       String     @db.VarChar(20)
-  password    String     @db.VarChar(255)
+  user_id     Int      @id @default(autoincrement())
+  fname       String   @db.VarChar(255)
+  lname       String?  @db.VarChar(255)
+  email       String   @unique @db.VarChar(255)
+  phone       String   @db.VarChar(20)
+  password    String   @db.VarChar(255)
   address     String?
   role        Int
-  createdDate DateTime   @default(now())
-  updatedDate DateTime   @updatedAt
-  material    Material[]
-  orders      Order[]
-  userrole    User_role  @relation(fields: [role], references: [user_role_id])
+  createdDate DateTime @default(now())
+  updatedDate DateTime @updatedAt
 }
 
 model User_role {
   user_role_id Int    @id @default(autoincrement())
   role_name    String @db.VarChar(255)
-  user         User[]
 }
 
 model Order {
-  order_id     Int           @id @default(autoincrement())
-  user_id      Int
-  order_date   DateTime      @db.Date
-  total_price  Float
-  createdDate  DateTime      @default(now())
-  user         User          @relation(fields: [user_id], references: [user_id])
-  order_detail OrderDetail[]
-  payment      Payment[]
+  order_id    Int      @id @default(autoincrement())
+  user_id     Int
+  order_date  DateTime @db.Date
+  total_price Float
+  createdDate DateTime @default(now())
 }
 
 model OrderDetail {
-  order_detail_id Int           @id @default(autoincrement())
+  order_detail_id Int      @id @default(autoincrement())
   order_id        Int
   material_id     Int
   quantity        Int
@@ -50,26 +43,17 @@ model OrderDetail {
   paper_type      Int
   description     String?
   delivery_type   Int
-  createdDate     DateTime      @default(now())
+  createdDate     DateTime @default(now())
   total_price     Float
-  deliverytype    Delivery_type @relation(fields: [delivery_type], references: [delivery_type_id])
-  material        Material      @relation(fields: [material_id], references: [material_id])
-  order           Order         @relation(fields: [order_id], references: [order_id])
-}
-
-model Delivery_type {
-  delivery_type_id   Int           @id @default(autoincrement())
-  delivery_type_name String        @db.VarChar(255)
-  order_detail       OrderDetail[]
 }
 
 model Material {
-  material_id     Int           @id @default(autoincrement())
+  material_id     Int      @id @default(autoincrement())
   user_id         Int
   template_id     Int
-  file_name       String        @db.VarChar(50)
+  file_name       String   @db.VarChar(50)
   material_object Json
-  createdDate     DateTime      @default(now())
+  createdDate     DateTime @default(now())
   description     String?
   paper_type      String
   quantity        Int
@@ -77,20 +61,17 @@ model Material {
   total_price     Float
   material_type   Int
   file_url        String
-  template        Templates     @relation(fields: [template_id], references: [template_id])
-  user            User          @relation(fields: [user_id], references: [user_id])
-  order_detail    OrderDetail[]
+  status          String   @db.VarChar(50)
 }
 
 model Templates {
-  template_id   Int        @id @default(autoincrement())
-  template_name String     @db.VarChar(50)
+  template_id   Int      @id @default(autoincrement())
+  template_name String   @db.VarChar(50)
   price         Float
   image_url     String?
   design_object String
-  createdDate   DateTime   @default(now())
-  updatedDate   DateTime   @updatedAt
-  material      Material[]
+  createdDate   DateTime @default(now())
+  updatedDate   DateTime @updatedAt
 }
 
 model Payment {
@@ -101,5 +82,4 @@ model Payment {
   amount         Float
   status         Int
   createdDate    DateTime @default(now())
-  order          Order    @relation(fields: [order_id], references: [order_id])
 }
