@@ -1,58 +1,51 @@
-
+"use client"
 import {
-    Typography, Box,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    Chip
+    Typography, Box, Table, TableBody, TableCell, TableHead, TableRow, Chip, Pagination
 } from '@mui/material';
 import DashboardCard from '@/app/(DashboardLayout)//components/shared/DashboardCard';
+import { getMaterialList } from "@/services/MaterialService";
+import React, { useEffect, useState } from 'react';
 
-const products = [
-    {
-        id: "1",
-        name: "Sunil Joshi",
-        post: "Web Designer",
-        pname: "Elite Admin",
-        priority: "Low",
-        pbg: "primary.main",
-        budget: "3.9",
-    },
-    {
-        id: "2",
-        name: "Andrew McDownland",
-        post: "Project Manager",
-        pname: "Real Homes WP Theme",
-        priority: "Medium",
-        pbg: "secondary.main",
-        budget: "24.5",
-    },
-    {
-        id: "3",
-        name: "Christopher Jamil",
-        post: "Project Manager",
-        pname: "MedicalPro WP Theme",
-        priority: "High",
-        pbg: "error.main",
-        budget: "12.8",
-    },
-    {
-        id: "4",
-        name: "Nirav Joshi",
-        post: "Frontend Engineer",
-        pname: "Hosting Press HTML",
-        priority: "Critical",
-        pbg: "success.main",
-        budget: "2.4",
-    },
-];
+const OrderList = () => {
+    const [user, setUser] = useState(null);
+    const [orderData, setOrderData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1); 
+    const rowsPerPage = 10; 
 
+    React.useEffect(() => {
+        if (typeof window !== "undefined") {
+            const storage = localStorage.getItem("PSA-USER");
+            if (storage) {
+                setUser(JSON.parse(storage));
+            } else {
+                window.location.href = "/";
+            }
+        }
+    }, []);
 
-const Orders = () => {
+    useEffect(() => {
+        async function fetchOrders() {
+            try {
+                const data = await getMaterialList();
+                setOrderData(data);
+            } catch (error) {
+                console.error("Error fetching order:", error);
+            }
+        }
+        fetchOrders();
+    }, []);
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
+    
+    const paginatedData = orderData.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+    );
+
     return (
-
         <DashboardCard title="Сүүлийн үеийн захиалга">
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
@@ -66,92 +59,134 @@ const Orders = () => {
                         <TableRow>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Id
+                                    #
                                 </Typography>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Assigned
+                                    Нэр
                                 </Typography>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Name
+                                    Утас
                                 </Typography>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Priority
+                                    Имэйл
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Загвар
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Илгээсэн огноо
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Цаасны төрөл
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Ширхэг
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Budget
+                                    Үнэ
+                                </Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Төлөв
                                 </Typography>
                             </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {products.map((product) => (
-                            <TableRow key={product.name}>
-                                <TableCell>
-                                    <Typography
-                                        sx={{
-                                            fontSize: "15px",
-                                            fontWeight: "500",
-                                        }}
-                                    >
-                                        {product.id}
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <Box>
-                                            <Typography variant="subtitle2" fontWeight={600}>
-                                                {product.name}
-                                            </Typography>
-                                            <Typography
-                                                color="textSecondary"
-                                                sx={{
-                                                    fontSize: "13px",
-                                                }}
-                                            >
-                                                {product.post}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                        {product.pname}
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Chip
-                                        sx={{
-                                            px: "4px",
-                                            backgroundColor: product.pbg,
-                                            color: "#fff",
-                                        }}
-                                        size="small"
-                                        label={product.priority}
-                                    ></Chip>
-                                </TableCell>
-                                <TableCell align="right">
-                                    <Typography variant="h6">${product.budget}k</Typography>
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                        {paginatedData && paginatedData.length > 0 ? (
+                            paginatedData.map((orders, index) => (
+                                <TableRow key={orders.material_id}>
+                                    <TableCell>
+                                        <Typography sx={{ fontSize: "13px"}}>
+                                            {(currentPage - 1) * rowsPerPage + index + 1}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography sx={{ fontSize: "13px" }}>
+                                            {orders.fname}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography sx={{ fontSize: "13px" }}>
+                                            {orders.phone}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography sx={{ fontSize: "13px" }}>
+                                            {orders.email}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography sx={{ fontSize: "13px" }}>
+                                            {orders.file_name}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography sx={{ fontSize: "13px" }}>
+                                            {orders.createddate}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography sx={{ fontSize: "13px" }}>
+                                            {orders.paper_type}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography sx={{ fontSize: "13px" }}>
+                                            {orders.quantity}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography sx={{ fontSize: "13px" }}>
+                                            {orders.total_price}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            sx={{
+                                                px: "4px",
+                                                backgroundColor: "info.main",
+                                                color: "#fff",
+                                            }}
+                                            size="small"
+                                            label={orders.status_name}
+                                        ></Chip>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <Typography>Захиалга байхгүй байна.</Typography>
+                        )}
                     </TableBody>
                 </Table>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <Pagination
+                    count={Math.ceil(orderData.length / rowsPerPage)}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    color="primary"
+                />
             </Box>
         </DashboardCard>
     );
 };
 
-export default Orders;
+export default OrderList;

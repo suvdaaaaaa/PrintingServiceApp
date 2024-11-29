@@ -4,10 +4,9 @@ import { Box, Button, Stack, Typography, Modal } from '@mui/material';
 import ImageListHome from '@/app/(DashboardLayout)/components/imagesDashboard/ImageList';
 import Link from 'next/link';
 import { Grid, keyframes } from '@mui/system';
-import FormsOrder from '@/app/(DashboardLayout)/components/formsUpload/forms';
 import { useState } from 'react';
 import MSidebar from '@/app/(DashboardLayout)/layout/sidebar/Sidebar';
-import Orders from '@/app/(DashboardLayout)/components/orders/Orders';
+import OrderList from './components/orders/Orders';
 
 const gradientAnimation = keyframes`
   0% { background-position: 0% 50%; }
@@ -43,7 +42,7 @@ const Dashboard = () => {
     ) : (
       <Grid>
         <MSidebar />
-        <Orders />
+        <OrderList />
       </Grid>
     );
   }

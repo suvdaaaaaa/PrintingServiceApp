@@ -11,26 +11,26 @@ const createMaterial = async (data) => {
   return res.json();
 };
 
-const getMaterialHistory = async (data) => {
+const getMaterialHistory = async () => {
   const res = await fetch(`/api/history`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
+    cache: "no-cache",
   });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
 
   return res.json();
 };
 
-const getMaterialList = async (data) => {
+const getMaterialList = async () => {
   const res = await fetch(`/api/dashboard`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
+    cache: "no-cache",
   });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
 
   return res.json();
 };

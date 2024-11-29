@@ -50,11 +50,36 @@ export const createMaterialModel = async (data) => {
 };
 
 export const getMaterialModel = async () => {
-  try {
-    const orders = await prisma.material.findMany({});
-    return orders;
-  } catch (error) {
-    console.error("Error in get templates model:", error);
-    throw new Error("Failed to fetch templates");
-  }
+ try {
+   const result = await prisma.$queryRaw `
+      SELECT 
+        ss1.material_id,
+        ss1.user_id,
+        ss2.lname,
+        ss2.fname,
+        ss2.phone,
+        ss2.email,
+        case when ss1.file_name ='Upload' then 'Хэрэглэгчийн загвар' else ss1.file_name end file_name,
+        to_char(ss1."createdDate", 'YYYY-MM-DD') as createdDate,
+        ss1.paper_type,
+        ss1.quantity,
+        ss1.total_price,
+        ss1.file_url,
+        ss1.status,
+        CASE 
+          WHEN ss1.status = 'PENDING' THEN 'Илгээсэн'
+          WHEN ss1.status = 'DONE' THEN 'Баталгаажсан'
+          WHEN ss1.status = 'CANCELED' THEN 'Цуцалсан'
+        END as status_name
+      FROM "Material" ss1
+      INNER JOIN "User" ss2
+        ON ss1.user_id = ss2.user_id;
+    `;
+
+   return result;
+ } catch (error) {
+   console.error("Error executing raw query:", error);
+   throw new Error("Failed to fetch material data");
+ }
 };
+
