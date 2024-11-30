@@ -35,9 +35,22 @@ const getMaterialList = async () => {
   return res.json();
 };
 
+const updateMaterialList = async (material_id, status) => {
+  const res = await fetch(`/api/dashboard`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({material_id, status}),
+  });
+
+  return res;
+};
 
 export {
   createMaterial,
   getMaterialHistory,
-  getMaterialList
+  getMaterialList,
+  updateMaterialList
 };
+

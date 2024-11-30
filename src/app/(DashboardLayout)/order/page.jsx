@@ -117,8 +117,6 @@ export default function Order() {
             status: "PENDING"
           });
 
-          console.log('dataa', data);
-
           setModal(false);
 
           if (data.status === 200) {

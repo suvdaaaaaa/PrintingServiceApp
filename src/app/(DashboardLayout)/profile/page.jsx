@@ -60,7 +60,6 @@ const Profile = () => {
                 phone: values.phone,
                 address: values.address,
             });
-            console.log("data", data);
             if (data.status === 200) {
                 toast.success(data.message);
                 localStorage.setItem('PSA-USER', JSON.stringify(data.result));

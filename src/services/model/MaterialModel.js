@@ -3,7 +3,7 @@ import prisma from "@/utils/prisma";
 export const createMaterialModel = async (data) => {
   const {
     user_id,
-    template_id, 
+    template_id,
     material_type,
     side,
     quantity,
@@ -50,8 +50,8 @@ export const createMaterialModel = async (data) => {
 };
 
 export const getMaterialModel = async () => {
- try {
-   const result = await prisma.$queryRaw `
+  try {
+    const result = await prisma.$queryRaw `
       SELECT 
         ss1.material_id,
         ss1.user_id,
@@ -73,13 +73,42 @@ export const getMaterialModel = async () => {
         END as status_name
       FROM "Material" ss1
       INNER JOIN "User" ss2
-        ON ss1.user_id = ss2.user_id;
+        ON ss1.user_id = ss2.user_id
+      order by to_char(ss1."createdDate", 'YYYY-MM-DD') desc
+        ;
     `;
 
-   return result;
- } catch (error) {
-   console.error("Error executing raw query:", error);
-   throw new Error("Failed to fetch material data");
- }
+    return result;
+  } catch (error) {
+    console.error("Error executing raw query:", error);
+    throw new Error("Failed to fetch material data");
+  }
 };
 
+export const updateMaterialModel = async (material_id, status) => {
+
+  try {
+    const updateMaterial = await prisma.material.update({
+      where: {
+        material_id,
+      },
+      data: {
+        status,
+      },
+    });
+
+    return {
+      status: 200,
+      message: "Амжилттай",
+      result: updateMaterial,
+    };
+  } catch (error) {
+    console.error(`Error in createMaterialModel: ${error}`);
+
+    return {
+      status: 500,
+      message: "Server error",
+      result: `${error.message}`,
+    };
+  }
+};
