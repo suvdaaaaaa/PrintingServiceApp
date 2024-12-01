@@ -244,48 +244,10 @@ function Editor({ user, id }) {
         }}
         onClick={async () => {
           console.log('clicked');
-          if (user.role == 1) {
-            if (
-              formName === '' ||
-              formPrice === '' ||
-              canvasRef.current.getObjects().length === 0
-            ) {
-              alert('Please fill all the fields');
-            } else {
-              var dataURL = canvasRef.current.toDataURL({
-                format: 'jpeg',
-                quality: 0.75
-              });
-
-              const data = await fetch(`/api/templates/create`, {
-                method: id ? 'PUT' : 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  template_id: id ? +id : null,
-                  template_name: formName,
-                  price: +formPrice,
-                  image_url: dataURL,
-                  design_object: JSON.stringify(canvasRef.current.toJSON())
-                })
-              });
-              const json = await data.json();
-              if (json.data.status === 200) {
-                toast.success(json.data.message);
-              } else {
-                toast.error(json.data.message);
-              }
-              console.log('json', json);
-            }
-          }
-
-          if (user.role == 2) {
             var dataURL = canvasRef.current.toDataURL({
               format: 'jpeg',
               quality: 0.75
             });
-
             if (
               side === '' ||
               quantity === '' ||
@@ -325,7 +287,7 @@ function Editor({ user, id }) {
               console.log('json', json);
             }
           }
-        }}
+        }
       >
         <Image src={img} alt={name} height={80} width={80} />
         <Typography variant="h6">{name}</Typography>
@@ -692,7 +654,44 @@ function Editor({ user, id }) {
                   variant="outlined"
                   endIcon={<SaveIcon />}
                   onClick={async () => {
-                    setModal(true);
+                    if (user.role == 1) {
+                      if (
+                        formName === '' ||
+                        formPrice === '' ||
+                        canvasRef.current.getObjects().length === 0
+                      ) {
+                        alert('Please fill all the fields');
+                      } else {
+                        var dataURL = canvasRef.current.toDataURL({
+                          format: 'jpeg',
+                          quality: 0.75
+                        });
+
+                        const data = await fetch(`/api/templates/create`, {
+                          method: id ? 'PUT' : 'POST',
+                          headers: {
+                            'Content-Type': 'application/json'
+                          },
+                          body: JSON.stringify({
+                            template_id: id ? +id : null,
+                            template_name: formName,
+                            price: +formPrice,
+                            image_url: dataURL,
+                            design_object: JSON.stringify(canvasRef.current.toJSON())
+                          })
+                        });
+                        const json = await data.json();
+                        if (json.data.status === 200) {
+                          toast.success(json.data.message);
+                        } else {
+                          toast.error(json.data.message);
+                        }
+                        console.log('json', json);
+                      }
+                    }
+                    else{
+                      setModal(true);
+                    }
                   }}
                 >
                   {user && user.role == 1 ? 'Хадгалах' : 'Захиалах'}

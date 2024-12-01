@@ -105,7 +105,7 @@ export default function Order() {
 
           const data = await createMaterial({
             user_id: user.user_id,
-            template_id: 11,
+            template_id: 0,
             material_type: 1,
             side: formik.values.side,
             quantity: +formik.values.quantity,
